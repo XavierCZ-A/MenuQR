@@ -1,0 +1,84 @@
+<div class="flex min-h-screen flex-col items-center justify-center gap-6 bg-gray-50 px-4 py-12">
+  <div class="w-full max-w-md rounded-2xl bg-white p-10 shadow-sm">
+    <% if @user.errors.any? %>
+      <div class="mb-5 rounded-xl border border-red-200 bg-red-50 p-3.5">
+        <div class="mb-1.5 flex items-center gap-2">
+          <%= render_svg("exclamation_circle.svg", styles: "w-5 h-5 text-red-500 shrink-0") %>
+          <span class="text-[0.8125rem] font-semibold text-red-700">No se pudo crear la cuenta</span>
+        </div>
+
+        <ul class="space-y-0.5 pl-6">
+          <% @user.errors.full_messages.each do |message| %>
+            <li class="list-disc text-[0.75rem] text-red-600"><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold">
+        Registrate
+      </h1>
+
+      <div class="flex items-center">
+        <p class="text-base">¿Ya tienes cuenta?</p>
+
+        <%= render Button::Component.new(
+          text: "Inicia sesion",
+          variant: :link,
+          size: :md,
+          href: new_session_path,
+        ) %>
+      </div>
+    </div>
+
+    <%= form_with(model: @user, class: "w-full") do |form| %>
+      <div class="mb-5">
+        <div class="mb-2">
+          <label class="text-sm font-medium text-primary" for="email_address">Nombre del restaurante</label>
+          <span class="text-red-500">*</span>
+        </div>
+
+        <%= form.fields_for :restaurants do |rf| %>
+          <%= rf.text_field :name,
+            placeholder: "Nombre del restaurante",
+            required: true,
+            class: "flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-foreground/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50" %>
+        <% end %>
+      </div>
+
+      <div class="mb-5">
+        <div class="mb-2">
+          <label class="text-sm font-medium text-primary" for="email_address">Correo Electrónico</label>
+          <span class="text-red-500">*</span>
+        </div>
+
+        <%= form.email_field :email_address,
+            id: "email_address",
+            required: true,
+            autofocus: true,
+            autocomplete: "email_address",
+            placeholder: "example@email.com",
+            class: "flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-foreground/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50" %>
+      </div>
+
+      <div class="mb-8">
+        <%= render Password::Component.new(
+          id: "password",
+          label: "Contraseña",
+          required: true,
+          name: "user[password]",
+          placeholder: "••••••••",
+        ) %>
+      </div>
+
+      <%= render Button::Component.new(
+        text: "Registrarse",
+        type: "submit",
+        full_width: true,
+      ) %>
+    <% end %>
+  </div>
+
+  <%# TODO: image here %>
+</div>

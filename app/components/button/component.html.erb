@@ -1,0 +1,15 @@
+<%= content_tag(tag_name, **tag_attributes) do %>
+  <% if @loading %>
+    <%= loading_spinner %>
+  <% elsif @icon.present? && (@icon_position == :left || @icon_only) %>
+    <span class="inline-flex shrink-0 <%= icon_classes %>"><%= @icon %></span>
+  <% end %>
+
+  <% if @text.present? && !@icon_only %>
+    <span class="truncate"><%= @text %></span>
+  <% end %>
+
+  <% if @icon.present? && @icon_position == :right && !@icon_only && !@loading %>
+    <span class="inline-flex shrink-0 <%= icon_classes %>"><%= @icon %></span>
+  <% end %>
+<% end %>

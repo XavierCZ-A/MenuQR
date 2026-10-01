@@ -1,0 +1,190 @@
+# ══════════════════════════════════════════════════════
+#  .herb.yml — Configuración de Herb para HTML+ERB
+#  Docs: https://herb-tools.dev/configuration
+# ══════════════════════════════════════════════════════
+
+version: 0.11.0
+
+# ── Framework ─────────────────────────────────────────
+# Le dice a Herb qué framework estás usando para que
+# entienda los helpers de Rails (link_to, form_with, etc.)
+# Opciones: ruby | actionview | hanami | sinatra
+framework: actionview
+
+# ── Template engine ───────────────────────────────────
+# El motor ERB que usas. erubi es el default de Rails 5+
+# Opciones: erubi | erb | herb
+template_engine: erubi
+
+# ── Archivos globales ─────────────────────────────────
+# Aplica a linter Y formatter. Los patrones son ADITIVOS
+# (se suman a los defaults, no los reemplazan)
+files:
+  include:
+    - "**/*.turbo_stream.erb" # Turbo Streams también se lintean
+  exclude:
+    - "tmp/**/*"
+    - "public/**/*"
+    - "storage/**/*"
+
+# ══════════════════════════════════════════════════════
+#  LINTER
+# ══════════════════════════════════════════════════════
+linter:
+  enabled: true
+
+  # Nivel mínimo para que el proceso falle (útil en CI/CD)
+  # Opciones: error | warning | info | hint
+  # "warning" es más estricto que el default "error"
+  failLevel: warning
+
+  rules:
+    # Prohíbe líneas en blanco extra dentro de tags ERB.
+    # Lo tienes desactivado — OK si prefieres más espacio visual
+    erb-no-extra-newline:
+      enabled: false
+
+    # Prohíbe ERB vacío: <% %> sin código. Evita ruido en templates.
+    erb-no-empty-tags:
+      enabled: true
+
+    # Requiere espacios dentro de los tags: <%= foo %> vs <%=foo%>
+    erb-require-whitespace-inside-tags:
+      enabled: true
+
+    # Prohíbe whitespace extra dentro de tags: <%=  foo  %>
+    erb-no-extra-whitespace-inside-tags:
+      enabled: true
+
+    # Requiere newline al final del archivo (Unix best practice)
+    erb-require-trailing-newline:
+      enabled: true
+
+    erb-no-trailing-whitespace:
+      enabled: false
+
+    # Prohíbe variables de instancia (@var) dentro de partials.
+    # Fuerza el uso de locals, que es la buena práctica en Rails.
+    erb-no-instance-variables-in-partials:
+      enabled: true
+
+    # Prohíbe usar javascript_tag helper — ya está deprecado.
+    # Usa content_security_policy con nonces en su lugar.
+    erb-no-javascript-tag-helper:
+      enabled: true
+
+    # Prohíbe raw output (<%== %>) que puede causar XSS.
+    erb-no-unsafe-raw:
+      enabled: true
+
+    # Prohíbe interpolación ERB en atributos JS como onclick=
+    erb-no-unsafe-js-attribute:
+      enabled: true
+
+    # Prefiere el helper image_tag de Rails sobre <img src="...">
+    # Lo tienes activado — perfecto para asset pipeline / Vite
+    erb-prefer-image-tag-helper:
+      enabled: true
+
+    # Prohíbe class names interpolados con ERB dinámico.
+    # Problemático con Tailwind JIT (no puede purgear clases dinámicas).
+    erb-no-interpolated-class-names:
+      enabled: true
+      severity: warning
+
+    # Requiere strict locals en partials (# locals: (...))
+    # Muy recomendado en Rails 7.1+ para tipado explícito de partials
+    erb-strict-locals-required:
+      enabled: true
+      severity: warning
+      # Solo en partials, no en layouts o vistas principales
+      only:
+        - "app/views/**/_*.html.erb"
+
+    # ── HTML ────────────────────────────────────────────
+
+    # Prohíbe self-closing en tags HTML que no son void elements.
+    # Lo tienes activado — correcto: <div /> no es HTML válido.
+    html-no-self-closing:
+      enabled: true
+
+    # Tags HTML siempre en minúsculas: <DIV> → <div>
+    html-tag-name-lowercase:
+      enabled: true
+
+    # Atributos siempre con comillas dobles: class='foo' → class="foo"
+    html-attribute-double-quotes:
+      enabled: true
+
+    # Prohíbe atributos duplicados en el mismo elemento
+    html-no-duplicate-attributes:
+      enabled: true
+
+    # Prohíbe IDs duplicados en la misma plantilla
+    html-no-duplicate-ids:
+      enabled: true
+
+    # Prohíbe elementos de bloque dentro de inline: <span><div>
+    html-no-block-inside-inline:
+      enabled: true
+
+    # ── Accesibilidad ────────────────────────────────────
+
+    # Imágenes requieren atributo alt (accesibilidad básica)
+    html-img-require-alt:
+      enabled: true
+
+    # Links requieren href (no <a> vacíos)
+    html-anchor-require-href:
+      enabled: true
+
+    # Headings no pueden estar vacíos
+    html-no-empty-headings:
+      enabled: true
+
+    # iFrames requieren title
+    html-iframe-has-title:
+      enabled: true
+
+    # Roles ARIA válidos
+    html-aria-role-must-be-valid:
+      enabled: true
+
+    # ── Turbo ────────────────────────────────────────────
+
+    # Elementos con data-turbo-permanent requieren un ID único
+    # Crítico si usas Turbo Frames o Turbo Drive
+    turbo-permanent-require-id:
+      enabled: true
+    erb-no-multiple-statements:
+      enabled: false
+
+# ══════════════════════════════════════════════════════
+#  FORMATTER
+# ══════════════════════════════════════════════════════
+formatter:
+  enabled: true
+
+  # Tamaño de indentación (2 es el estándar en Rails/Ruby)
+  indentWidth: 2
+
+  # Longitud máxima de línea antes de hacer wrap
+  maxLineLength: 120
+
+  # Rewriters: transformaciones que se aplican ANTES o DESPUÉS de formatear
+  rewriter:
+    # Pre: se aplican ANTES del formateo (modifican el AST)
+    pre:
+      # Ordena las clases Tailwind automáticamente (como Prettier plugin)
+      - tailwind-class-sorter
+    # Post: se aplican DESPUÉS del formateo (sobre el string final)
+    post: []
+
+# ══════════════════════════════════════════════════════
+#  ENGINE (si usas ReActionView / Herb::Engine)
+# ══════════════════════════════════════════════════════
+# engine:
+#   validators:
+#     security: true      # Detecta XSS en posiciones inseguras
+#     nesting: true       # Valida nesting HTML correcto
+#     accessibility: true # Valida atributos de accesibilidad

@@ -1,0 +1,78 @@
+<% content_for :title, "Iniciar Sesion | Shopy" %>
+
+<div class="flex min-h-screen flex-col items-center justify-center gap-6 bg-gray-50 px-4 py-12">
+  <div class="w-full max-w-md rounded-2xl bg-white p-10 shadow-sm">
+    <% if flash[:alert] %>
+      <div class="mb-5 rounded-xl border border-red-200 bg-red-50 p-3.5">
+        <div class="flex items-center gap-2">
+          <%= render_svg("exclamation_circle.svg", styles: "w-5 h-5 text-red-500 shrink-0") %>
+          <span class="text-[0.8125rem] font-medium text-red-700"><%= flash[:alert] %></span>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold">
+        Iniciar sesión
+      </h1>
+
+      <div class="flex items-center">
+        <p class="text-base">¿Aun no tienes cuenta?</p>
+
+        <%= render Button::Component.new(
+          text: "Registrate",
+          variant: :link,
+          size: :md,
+          href: new_user_path,
+        ) %>
+      </div>
+    </div>
+
+    <%= form_with url: session_url, class: "w-full" do |form| %>
+      <div class="mb-5">
+        <div class="mb-2 flex items-center justify-between">
+          <label class="text-[0.8125rem] font-medium text-[#1a1a2e]" for="email_address">Correo Electrónico</label>
+        </div>
+
+        <%= form.email_field :email_address,
+          required: true,
+          autofocus: true,
+          autocomplete: "username",
+          placeholder: "tu@email.com",
+          value: @email,
+          id: "email_address",
+          class: "flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-foreground/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50" %>
+      </div>
+
+      <div class="mb-5">
+        <div class="mb-2 flex items-center justify-between">
+          <label class="text-[0.8125rem] font-medium text-[#1a1a2e]" for="password">Contraseña</label>
+          <%= link_to "¿Olvidaste tu contraseña?", new_password_path, class: "text-xs text-primary font-medium" %>
+        </div>
+
+        <%= form.password_field :password,
+          required: true,
+          autocomplete: "current-password",
+          placeholder: "••••••••",
+          maxlength: 72,
+          id: "password",
+          class: "flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-foreground/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50" %>
+      </div>
+
+      <%= render Button::Component.new(
+          text: "Entrar",
+          type: "submit",
+          full_width: true,
+        ) %>
+    <% end %>
+
+    <p class="mt-6 text-center text-[0.6875rem] leading-relaxed text-[#9a9ab0]">
+      Al continuar, aceptas nuestros
+      <%= link_to "Términos de Servicio", new_user_path, class: "font-medium text-primary underline underline-offset-2 transition-colors hover:text-accent" %>
+      y
+      <%= link_to "Política de Privacidad", new_user_path, class: "font-medium text-primary underline underline-offset-2 transition-colors hover:text-accent" %>.
+    </p>
+  </div>
+
+  <%# TODO: image here %>
+</div>
