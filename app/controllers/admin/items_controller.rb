@@ -1,13 +1,6 @@
-class Admin::ItemsController < ApplicationController
-  before_action :set_item, only: %i[ show edit update destroy ]
+class Admin::ItemsController < Admin::BaseController
+  before_action :set_item, only: %i[ edit update destroy ]
   before_action :set_categories, only: %i[ new create edit update ]
-
-  def index
-    @items = current_restaurant.items.includes(:category)
-  end
-
-  def show
-  end
 
   def new
     @item = Item.new(category: @categories.find_by(name: Category::DEFAULT_NAME))
@@ -19,7 +12,7 @@ class Admin::ItemsController < ApplicationController
   def create
     @item = Item.new(item_params)
     if save_with_category(@item)
-      redirect_to admin_items_path, notice: "Platillo agregado."
+      redirect_to admin_root_path, notice: "Platillo agregado."
     else
       render :new, status: :unprocessable_content
     end
@@ -28,7 +21,7 @@ class Admin::ItemsController < ApplicationController
   def update
     @item.assign_attributes(item_params)
     if save_with_category(@item)
-      redirect_to admin_items_path, notice: "Platillo actualizado.", status: :see_other
+      redirect_to admin_root_path, notice: "Platillo actualizado.", status: :see_other
     else
       render :edit, status: :unprocessable_content
     end
@@ -36,14 +29,10 @@ class Admin::ItemsController < ApplicationController
 
   def destroy
     @item.destroy!
-    redirect_to admin_items_path, notice: "Platillo eliminado.", status: :see_other
+    redirect_to admin_root_path, notice: "Platillo eliminado.", status: :see_other
   end
 
   private
-    def current_restaurant
-      @current_restaurant ||= Current.user.restaurants.first!
-    end
-
     def set_item
       @item = current_restaurant.items.find(params.expect(:id))
     end

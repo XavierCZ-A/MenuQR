@@ -1,12 +1,17 @@
-<% content_for :title, "Editing item" %>
+<% content_for :title, "Editar #{@item.name_was}" %>
 
-<h1>Editing item</h1>
+<main class="px-4 py-8 md:px-8 md:py-10">
+  <%= render "page_header", title: @item.name_was %>
+  <%= render "form", item: @item, categories: @categories %>
 
-<%= render "form", item: @item, categories: @categories %>
+  <div class="mx-auto mt-10 flex max-w-xl flex-col gap-4 rounded-lg border border-destructive/30 p-5 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="text-sm font-semibold text-foreground">Eliminar platillo</p>
+      <p class="text-sm text-foreground/60">No se puede deshacer. Si solo quieres ocultarlo, desactívalo desde el dashboard.</p>
+    </div>
 
-<br>
-
-<div>
-  <%= link_to "Show this item", [:admin, @item] %> |
-  <%= link_to "Back to items", admin_items_path %>
-</div>
+    <%= form_with url: admin_item_path(@item), method: :delete, data: { turbo_confirm: "¿Eliminar \"#{@item.name_was}\"? Esta acción no se puede deshacer." } do %>
+      <%= render Button::Component.new(text: "Eliminar", variant: :destructive, size: :sm, type: "submit", classes: "w-full sm:w-auto") %>
+    <% end %>
+  </div>
+</main>

@@ -31,9 +31,11 @@ ERB templates are linted/formatted by Herb (`.herb.yml`): no instance variables 
 
 **Registration** — `UsersController#create` creates the `User` and its `Restaurant` together via `accepts_nested_attributes_for :restaurants`. `User::MAX_RESTAURANTS` (currently 1) caps restaurants per user, enforced both in the nested-attributes limit and a `Restaurant` validation. `Restaurant` generates a unique, accent-stripped `slug` from its name on create; public restaurant routes use `param: :slug`.
 
-**Routing** — custom paths: login is `/login`, registration is `/register`, and the `Admin::` namespace is mounted at `/dashboard` (e.g. `admin_items_path` → `/dashboard/items`). Admin controllers live in `app/controllers/admin/`. Data scoping to the owner's restaurant is done manually via `Current.user.restaurant_ids`.
+**Routing** — custom paths: login is `/login`, registration is `/register`, and the `Admin::` namespace is mounted at `/dashboard`. The app root and `admin_root_path` are the dashboard (restaurant info + all items grouped by category); there is no items index/show. Item availability is toggled via a singular nested resource (`POST`/`DELETE /dashboard/items/:id/availability`). Public menu is `restaurant_url(restaurant.slug)` and is the only unauthenticated page besides auth.
 
-**Domain** — `User has_many :restaurants`; `Category belongs_to :restaurant`; `Item` is the menu item (associations still being built out).
+**Admin controllers** inherit from `Admin::BaseController`, which sets the `admin` layout and exposes `current_restaurant` (users have one restaurant). Always scope records through it (`current_restaurant.items.find`) so users can't reach other restaurants' data. The `admin` layout is nested inside `application` via `content_for :content`, renders `Navbar::Component` + flash notice, and enables Turbo morph refreshes — so actions just `redirect_to admin_root_path` and the page updates in place keeping scroll (no Turbo Stream templates).
+
+**Domain** — `User has_many :restaurants`; `Restaurant has_many :categories` (a "General" category is auto-created, `Category::DEFAULT_NAME`) and `has_many :items, through: :categories`; `Item belongs_to :category`. Prices are stored as `price_cents`; `Item#price`/`price=` convert from decimal input.
 
 **UI components** — ViewComponents live in `app/components/<name>/component.rb` + `component.html.erb`, namespaced as `<Name>::Component` (e.g. `render Button::Component.new(...)`). Convention used across components:
 - Variant/size class maps as frozen constants holding full literal Tailwind class strings (so Tailwind can detect them).
@@ -41,4 +43,4 @@ ERB templates are linted/formatted by Herb (`.herb.yml`): no instance variables 
 
 Note: `rails g component` generates flat `FooComponent` classes and tests referencing them; rename to the `Foo::Component` folder layout to match the existing components.
 
-**Styling** — design tokens (`--primary`, `--destructive`, `--border`, etc., shadcn-style) are defined in `app/assets/stylesheets/application.tailwind.css`; use the semantic token classes (`bg-primary`, `text-foreground`) rather than raw colors. `render_svg(name, styles:)` inlines SVGs from `app/assets/images` with Tailwind classes.
+**Styling** — design tokens (`--primary`, `--destructive`, `--border`, etc., shadcn-style) are defined in `app/assets/stylesheets/application.tailwind.css`; use the semantic token classes (`bg-primary`, `text-foreground`) rather than raw colors. In light mode `muted-foreground` equals `foreground` and shadows are zero-opacity, so secondary text uses `text-foreground/60` and cards rely on `border-border` rather than shadows. Icons are Heroicons outline SVGs in `app/assets/images`, rendered with `render_svg`. `render_svg(name, styles:)` inlines SVGs from `app/assets/images` with Tailwind classes.

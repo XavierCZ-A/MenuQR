@@ -9,3 +9,6 @@ application.register("hello", HelloController)
 
 import PasswordController from "./password_controller"
 application.register("password", PasswordController)
+
+import ClipboardController from "./clipboard_controller"
+application.register("clipboard", ClipboardController)

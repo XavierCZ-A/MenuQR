@@ -2,12 +2,16 @@
 
 module Navbar
   class Component < ViewComponent::Base
-    attr_reader :user
+    attr_reader :restaurant
 
-    def initialize(user:)
+    def initialize(restaurant:)
       super()
 
-      @user = user
+      @restaurant = restaurant
+    end
+
+    def menu_url
+      helpers.restaurant_url(restaurant.slug)
     end
   end
 end

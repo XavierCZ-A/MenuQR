@@ -14,7 +14,7 @@ class Admin::ItemsControllerTest < ActionDispatch::IntegrationTest
       post admin_items_url, params: { item: { name: "Horchata", price: "35.00", category_id: categories(:drinks_one).id } }
     end
 
-    assert_redirected_to admin_items_url
+    assert_redirected_to admin_root_url
     item = Item.last
     assert_equal 3500, item.price_cents
     assert_equal categories(:drinks_one), item.category
@@ -61,7 +61,7 @@ class Admin::ItemsControllerTest < ActionDispatch::IntegrationTest
   test "updates an item" do
     patch admin_item_url(items(:taco)), params: { item: { name: "Taco de suadero", price: "28", category_id: categories(:general_one).id } }
 
-    assert_redirected_to admin_items_url
+    assert_redirected_to admin_root_url
     assert_equal 2800, items(:taco).reload.price_cents
   end
 end

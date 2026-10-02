@@ -1,4 +1,6 @@
 class RestaurantsController < ApplicationController
+  allow_unauthenticated_access only: :show
+
   # GET /restaurants/1 or /restaurants/1.json
   def show
     @restaurant = Restaurant.find_by(slug: params[:slug])

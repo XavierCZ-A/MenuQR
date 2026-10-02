@@ -11,7 +11,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       start_new_session_for(@user)
-      redirect_to restaurants_path
+      redirect_to admin_root_path
     else
       render :new, status: :unprocessable_entity
     end

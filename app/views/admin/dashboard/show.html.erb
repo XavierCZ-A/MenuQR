@@ -1,0 +1,110 @@
+<% content_for :title, "Dashboard · #{current_restaurant.name}" %>
+<% menu_url = restaurant_url(current_restaurant.slug) %>
+<% available_count = @items.count(&:available?) %>
+
+<main class="mx-auto max-w-5xl space-y-8 px-4 py-8 md:px-8 md:py-10">
+  <section class="space-y-5">
+    <div class="space-y-1">
+      <p class="text-xs font-semibold tracking-widest text-foreground/50 uppercase">Tu restaurante</p>
+      <h1 class="text-2xl font-bold tracking-tight text-foreground md:text-3xl"><%= current_restaurant.name %></h1>
+
+      <% if current_restaurant.description.present? %>
+        <p class="max-w-2xl text-sm text-foreground/60"><%= current_restaurant.description %></p>
+      <% end %>
+    </div>
+
+    <div
+      class="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between"
+      data-controller="clipboard"
+      data-clipboard-text-value="<%= menu_url %>"
+    >
+      <div class="flex min-w-0 items-center gap-3">
+        <span class="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+          <%= render_svg("qr_code.svg", styles: "size-5") %>
+        </span>
+
+        <div class="min-w-0">
+          <p class="text-xs font-medium text-foreground/60">Enlace de tu menú</p>
+          <p class="truncate font-mono text-sm text-foreground"><%= menu_url %></p>
+        </div>
+      </div>
+
+      <div class="flex shrink-0 gap-2">
+        <%= render Button::Component.new(
+          text: tag.span("Copiar", data: { clipboard_target: "label" }),
+          variant: :outline,
+          size: :sm,
+          icon: render_svg("copy.svg", styles: "size-full"),
+          data: { action: "clipboard#copy" },
+          classes: "flex-1 sm:flex-none",
+        ) %>
+
+        <%= render Button::Component.new(
+          text: "Abrir",
+          variant: :outline,
+          size: :sm,
+          href: menu_url,
+          icon: render_svg("external_link.svg", styles: "size-full"),
+          target: "_blank",
+          rel: "noopener",
+          classes: "flex-1 sm:flex-none",
+        ) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-3 gap-3 md:gap-4" aria-label="Resumen">
+    <% [["Platillos", @items.size], ["Disponibles", available_count], ["Ocultos", @items.size - available_count]].each do |label, value| %>
+      <div class="rounded-lg border border-border bg-card p-4 md:p-5">
+        <p class="text-xs font-medium text-foreground/60 md:text-sm"><%= label %></p>
+        <p class="mt-1 text-2xl font-bold tabular-nums text-foreground md:text-3xl"><%= value %></p>
+      </div>
+    <% end %>
+  </section>
+
+  <section class="space-y-4">
+    <div class="flex items-end justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-semibold text-foreground">Platillos</h2>
+        <p class="text-sm text-foreground/60">Desactiva un platillo para ocultarlo del menú sin borrarlo.</p>
+      </div>
+
+      <% if @items.any? %>
+        <%= render Button::Component.new(
+          text: "Agregar",
+          href: new_admin_item_path,
+          icon: render_svg("plus.svg", styles: "size-full"),
+          classes: "shrink-0",
+        ) %>
+      <% end %>
+    </div>
+
+    <% if @items.empty? %>
+      <div class="flex flex-col items-center gap-4 rounded-lg border border-dashed border-border bg-card px-6 py-14 text-center">
+        <span class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <%= render_svg("plus.svg", styles: "size-6") %>
+        </span>
+
+        <div class="space-y-1">
+          <p class="font-semibold text-foreground">Aún no tienes platillos</p>
+          <p class="text-sm text-foreground/60">Agrega el primero y aparecerá en tu menú.</p>
+        </div>
+
+        <%= render Button::Component.new(text: "Agregar platillo", href: new_admin_item_path) %>
+      </div>
+    <% else %>
+      <% @categories.each do |category| %>
+        <div class="overflow-hidden rounded-lg border border-border bg-card">
+          <div class="flex items-center justify-between border-b border-border px-4 py-3 md:px-5">
+            <h3 class="text-sm font-semibold text-foreground"><%= category.name %></h3>
+            <span class="text-xs text-foreground/60"><%= pluralize(category.items.size, "platillo", "platillos") %></span>
+          </div>
+
+          <ul class="divide-y divide-border">
+            <%= render partial: "item", collection: category.items, as: :item %>
+          </ul>
+        </div>
+      <% end %>
+    <% end %>
+  </section>
+</main>

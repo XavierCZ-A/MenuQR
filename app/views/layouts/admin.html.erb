@@ -1,0 +1,18 @@
+<% turbo_refreshes_with method: :morph, scroll: :preserve %>
+
+<% content_for :content do %>
+  <%= render Navbar::Component.new(restaurant: current_restaurant) %>
+
+  <% if notice.present? %>
+    <div class="mx-auto max-w-5xl px-4 pt-6 md:px-8">
+      <p class="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary" role="status">
+        <%= render_svg("check.svg", styles: "size-4 shrink-0") %>
+        <%= notice %>
+      </p>
+    </div>
+  <% end %>
+
+  <%= yield %>
+<% end %>
+
+<%= render template: "layouts/application" %>

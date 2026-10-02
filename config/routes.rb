@@ -6,8 +6,14 @@ Rails.application.routes.draw do
   resources :restaurants, only: [ :show ], param: :slug
 
   namespace :admin, path: "dashboard" do
-    resources :items
+    root "dashboard#show"
+
+    resources :items, except: %i[ index show ] do
+      resource :availability, only: %i[ create destroy ], module: :items
+    end
   end
+
+  root "admin/dashboard#show"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
