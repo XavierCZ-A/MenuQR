@@ -1,9 +1,13 @@
 <nav class="sticky top-0 z-50 w-full border-b border-border bg-background/90 px-4 backdrop-blur md:px-8">
   <div class="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4">
     <%= link_to admin_root_path, class: "flex min-w-0 items-center gap-2.5" do %>
-      <span class="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
-        <%= helpers.render_svg("qr_code.svg", styles: "size-4") %>
-      </span>
+      <% if restaurant.logo.attached? %>
+        <%= helpers.image_tag restaurant.logo.variant(:thumb), alt: "", class: "size-8 shrink-0 rounded-full bg-primary/5 object-cover" %>
+      <% else %>
+        <span class="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <%= helpers.render_svg("qr_code.svg", styles: "size-4") %>
+        </span>
+      <% end %>
       <span class="truncate text-sm font-semibold text-foreground"><%= restaurant.name %></span>
     <% end %>
 
@@ -17,6 +21,16 @@
         icon_position: :right,
         target: "_blank",
         rel: "noopener",
+      ) %>
+
+      <%= render Button::Component.new(
+        variant: :ghost,
+        size: :sm,
+        icon_only: true,
+        href: helpers.edit_admin_restaurant_path,
+        icon: helpers.render_svg("cog.svg", styles: "size-full"),
+        title: "Configuración",
+        aria: { label: "Configuración del restaurante" },
       ) %>
 
       <%= form_with url: session_path, method: :delete do %>

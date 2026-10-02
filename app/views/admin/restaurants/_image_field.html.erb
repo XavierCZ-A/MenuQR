@@ -1,0 +1,45 @@
+<%# locals: (form:, attribute:, label:, hint:, variant:, frame_class:, layout_class:) %>
+<% image = form.object.public_send(attribute) %>
+<% saved = image.attached? && image.blob.persisted? %>
+
+<div class="space-y-3" data-controller="file-preview">
+  <div>
+    <p class="text-sm font-medium text-foreground"><%= label %></p>
+    <p class="text-xs text-foreground/60"><%= hint %></p>
+  </div>
+
+  <%= tag.div class: layout_class do %>
+    <%= tag.button type: "button",
+      class: tw("relative flex shrink-0 cursor-pointer items-center justify-center overflow-hidden border border-border bg-primary/5 text-primary transition-colors hover:border-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", frame_class),
+      aria: { label: "Elegir #{label.downcase}" },
+      data: { action: "file-preview#browse" } do %>
+      <%= tag.img src: (url_for(image.variant(variant)) if saved), alt: "", hidden: !saved, class: "size-full object-cover", data: { file_preview_target: "image" } %>
+      <%= tag.span render_svg("photo.svg", styles: "size-6"), hidden: saved, data: { file_preview_target: "empty" } %>
+    <% end %>
+
+    <div class="flex gap-2">
+      <%= render Button::Component.new(
+        text: saved ? "Cambiar" : "Subir",
+        variant: :outline,
+        size: :sm,
+        icon: render_svg("photo.svg", styles: "size-full"),
+        data: { action: "file-preview#browse" },
+      ) %>
+
+      <%= render Button::Component.new(
+        text: "Quitar",
+        variant: :ghost,
+        size: :sm,
+        hidden: !saved,
+        classes: "hover:bg-destructive/10 hover:text-destructive",
+        data: { action: "file-preview#clear", file_preview_target: "clear" },
+      ) %>
+    </div>
+  <% end %>
+
+  <%= form.hidden_field "remove_#{attribute}", value: "0", data: { file_preview_target: "remove" } %>
+  <%= form.file_field attribute,
+    accept: Item::IMAGE_TYPES.join(","),
+    hidden: true,
+    data: { file_preview_target: "input", action: "change->file-preview#preview" } %>
+</div>

@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   namespace :admin, path: "dashboard" do
     root "dashboard#show"
 
+    resource :restaurant, only: %i[ edit update ], path: "settings", path_names: { edit: "/" }
+
     resources :items, except: %i[ index show ] do
       resource :availability, only: %i[ create destroy ], module: :items
     end

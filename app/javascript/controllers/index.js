@@ -7,6 +7,9 @@ import { application } from "./application"
 import ClipboardController from "./clipboard_controller"
 application.register("clipboard", ClipboardController)
 
+import FilePreviewController from "./file_preview_controller"
+application.register("file-preview", FilePreviewController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 

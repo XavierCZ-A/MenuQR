@@ -26,6 +26,15 @@ class RestaurantsControllerTest < ActionDispatch::IntegrationTest
     assert_select "[data-menu-tabs-target=tab]", 2
   end
 
+  test "header shows logo, banner, hours and address" do
+    restaurants(:one).update!(logo: dish_image, banner: dish_image, hours: "13:00 a 23:00", address: "Roma Norte")
+
+    get restaurant_url(restaurants(:one).slug)
+    assert_select "header img", 2
+    assert_select "header li", text: "13:00 a 23:00"
+    assert_select "header li", text: "Roma Norte"
+  end
+
   test "unknown slug is not found" do
     get restaurant_url("no-existe")
     assert_response :not_found

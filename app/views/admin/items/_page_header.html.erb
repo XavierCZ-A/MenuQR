@@ -1,4 +1,4 @@
-<%# locals: (title:) %>
+<%# locals: (title:, eyebrow: "Platillos") %>
 <div class="mx-auto mb-6 flex max-w-xl items-center gap-3">
   <%= render Button::Component.new(
     variant: :outline,
@@ -11,7 +11,7 @@
   ) %>
 
   <div>
-    <p class="text-xs font-medium text-foreground/60">Platillos</p>
+    <p class="text-xs font-medium text-foreground/60"><%= eyebrow %></p>
     <h1 class="text-xl font-bold tracking-tight text-foreground"><%= title %></h1>
   </div>
 </div>

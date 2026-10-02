@@ -1,0 +1,100 @@
+<% content_for :title, "Configuración · #{@restaurant.name_was}" %>
+
+<main class="px-4 py-8 md:px-8 md:py-10">
+  <%= render "admin/items/page_header", title: "Configuración", eyebrow: "Tu restaurante" %>
+
+  <%= form_with model: @restaurant, url: admin_restaurant_path, class: "mx-auto w-full max-w-xl space-y-6" do |form| %>
+    <% if @restaurant.errors.any? %>
+      <div class="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive" role="alert">
+        <p class="font-medium">
+          No se pudieron guardar los cambios (<%= pluralize(@restaurant.errors.count, "error", "errores") %>)
+        </p>
+
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          <% @restaurant.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <section class="flex flex-col gap-6 rounded-lg border border-border bg-card p-6 sm:p-8">
+      <div>
+        <h2 class="text-base font-semibold text-foreground">Imagen</h2>
+        <p class="text-sm text-foreground/60">Así te reconocen tus clientes al abrir el menú.</p>
+      </div>
+
+      <%= render "image_field",
+        form: form,
+        attribute: :banner,
+        label: "Portada",
+        hint: "Foto horizontal del local o tus platillos · PNG, JPG o WebP hasta 10 MB",
+        variant: :wide,
+        frame_class: "aspect-[3/1] w-full rounded-lg",
+        layout_class: "flex flex-col gap-3" %>
+
+      <%= render "image_field",
+        form: form,
+        attribute: :logo,
+        label: "Logo",
+        hint: "Imagen cuadrada · se muestra en círculo",
+        variant: :thumb,
+        frame_class: "size-20 rounded-full",
+        layout_class: "flex items-center gap-4" %>
+    </section>
+
+    <section class="flex flex-col gap-5 rounded-lg border border-border bg-card p-6 sm:p-8">
+      <div>
+        <h2 class="text-base font-semibold text-foreground">Información</h2>
+        <p class="text-sm text-foreground/60">Aparece en la parte de arriba de tu menú.</p>
+      </div>
+
+      <div class="space-y-1.5">
+        <%= render Input::Component.new(
+          name: "restaurant[name]",
+          value: @restaurant.name,
+          label: "Nombre",
+          required: true,
+          maxlength: 60,
+        ) %>
+        <p class="text-xs text-foreground/60">Tu enlace y QR no cambian aunque cambies el nombre.</p>
+      </div>
+
+      <div class="space-y-2">
+        <%= form.label :description, "Descripción", class: "block text-sm font-medium text-foreground" %>
+        <%= form.text_area :description,
+          rows: 3,
+          maxlength: 280,
+          placeholder: "Ej. Cocina de humo y maíz en el corazón de la ciudad",
+          class: "block min-h-24 w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-foreground/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" %>
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <%= render Input::Component.new(
+          name: "restaurant[address]",
+          value: @restaurant.address,
+          label: "Ubicación",
+          placeholder: "Ej. Roma Norte, CDMX",
+          maxlength: 80,
+          autocomplete: "street-address",
+        ) %>
+
+        <%= render Input::Component.new(
+          name: "restaurant[hours]",
+          value: @restaurant.hours,
+          label: "Horario",
+          placeholder: "Ej. Lun a Dom · 13:00 a 23:00",
+          maxlength: 80,
+        ) %>
+      </div>
+    </section>
+
+    <%= render Button::Component.new(
+      text: "Guardar cambios",
+      type: "submit",
+      size: :lg,
+      full_width: true,
+      data: { turbo_submits_with: "Guardando…" },
+    ) %>
+  <% end %>
+</main>
