@@ -42,7 +42,7 @@ class Admin::ItemsController < Admin::BaseController
     end
 
     def item_params
-      params.expect(item: [ :name, :description, :price, :available ])
+      params.expect(item: [ :name, :description, :price, :available, images: [] ])
     end
 
     # Uses the typed new category if present, otherwise the selected one.

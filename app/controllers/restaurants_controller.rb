@@ -3,7 +3,12 @@ class RestaurantsController < ApplicationController
 
   # GET /restaurants/1 or /restaurants/1.json
   def show
-    @restaurant = Restaurant.find_by(slug: params[:slug])
+    @restaurant = Restaurant.find_by!(slug: params[:slug])
+    @categories = @restaurant.categories
+      .eager_load(:items)
+      .where(items: { available: true })
+      .order(:name, "items.name")
+      .preload(items: { images_attachments: { blob: { variant_records: { image_attachment: :blob } } } })
   end
 
   # PATCH/PUT /restaurants/1 or /restaurants/1.json

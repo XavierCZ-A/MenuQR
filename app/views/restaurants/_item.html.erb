@@ -1,0 +1,20 @@
+<%# locals: (item:) %>
+<article class="flex flex-col overflow-hidden rounded-lg border border-border bg-card">
+  <% if item.images.attached? %>
+    <%= image_tag item.images.first.variant(:card), alt: item.name, loading: "lazy", class: "aspect-[4/3] w-full bg-primary/5 object-cover" %>
+  <% else %>
+    <div class="flex aspect-[4/3] items-center justify-center bg-primary/5" aria-hidden="true">
+      <span class="font-serif text-4xl text-primary/25 sm:text-5xl"><%= item.name.first.upcase %></span>
+    </div>
+  <% end %>
+
+  <div class="flex flex-1 flex-col gap-1 p-3 sm:p-4">
+    <h3 class="line-clamp-2 text-sm leading-snug font-semibold text-card-foreground sm:text-base"><%= item.name %></h3>
+
+    <% if item.description.present? %>
+      <p class="line-clamp-2 text-xs text-foreground/60 sm:text-sm"><%= item.description %></p>
+    <% end %>
+
+    <p class="mt-auto pt-1 text-sm font-semibold tabular-nums text-primary sm:text-base"><%= format_price(item) %></p>
+  </div>
+</article>

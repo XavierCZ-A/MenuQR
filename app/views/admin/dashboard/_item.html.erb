@@ -1,5 +1,13 @@
 <%# locals: (item:) %>
 <li id="<%= dom_id(item) %>" class="flex items-center gap-3 px-4 py-4 md:gap-4 md:px-5">
+  <% if item.images.attached? %>
+    <%= image_tag item.images.first.variant(:thumb), alt: "", class: "size-12 shrink-0 rounded-md bg-primary/5 object-cover" %>
+  <% else %>
+    <span class="flex size-12 shrink-0 items-center justify-center rounded-md bg-primary/5 font-serif text-lg text-primary/40" aria-hidden="true">
+      <%= item.name.first.upcase %>
+    </span>
+  <% end %>
+
   <%= tag.div class: tw("min-w-0 flex-1 transition-opacity", ("opacity-50" unless item.available?)) do %>
     <div class="flex items-center gap-2">
       <p class="truncate text-sm font-medium text-foreground"><%= item.name %></p>

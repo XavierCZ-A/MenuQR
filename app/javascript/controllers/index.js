@@ -4,11 +4,17 @@
 
 import { application } from "./application"
 
+import ClipboardController from "./clipboard_controller"
+application.register("clipboard", ClipboardController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 
+import ImagePreviewController from "./image_preview_controller"
+application.register("image-preview", ImagePreviewController)
+
+import MenuTabsController from "./menu_tabs_controller"
+application.register("menu-tabs", MenuTabsController)
+
 import PasswordController from "./password_controller"
 application.register("password", PasswordController)
-
-import ClipboardController from "./clipboard_controller"
-application.register("clipboard", ClipboardController)

@@ -1,3 +1,61 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, "Menú · #{@restaurant.name}" %>
+<% show_tabs = @categories.size > 1 %>
 
-<%= render @restaurant %>
+<div class="min-h-screen bg-background" data-controller="menu-tabs">
+  <header class="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
+    <div class="mx-auto flex h-14 max-w-5xl items-center gap-3 px-4">
+      <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary font-serif text-lg font-semibold text-primary-foreground" aria-hidden="true">
+        <%= @restaurant.name.first.upcase %>
+      </span>
+
+      <h1 class="truncate text-lg font-bold tracking-tight text-foreground"><%= @restaurant.name %></h1>
+    </div>
+
+    <% if show_tabs %>
+      <nav class="mx-auto max-w-5xl" aria-label="Categorías del menú">
+        <div class="flex gap-2 overflow-x-auto px-4 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" data-menu-tabs-target="bar">
+          <% @categories.each_with_index do |category, index| %>
+            <%= link_to category.name, "##{dom_id(category)}",
+              class: "shrink-0 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium whitespace-nowrap text-foreground/70 transition-colors data-active:border-primary data-active:bg-primary data-active:text-primary-foreground",
+              aria: { current: (true if index.zero?) },
+              data: { menu_tabs_target: "tab", action: "menu-tabs#select", active: (true if index.zero?) } %>
+          <% end %>
+        </div>
+      </nav>
+    <% end %>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-4 pt-5 pb-12">
+    <% if @restaurant.description.present? %>
+      <p class="mb-6 text-sm text-foreground/70"><%= @restaurant.description %></p>
+    <% end %>
+
+    <% if @categories.empty? %>
+      <div class="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border bg-card px-6 py-16 text-center">
+        <p class="font-semibold text-foreground">Estamos preparando el menú</p>
+        <p class="text-sm text-foreground/60">Vuelve pronto para ver nuestros platillos.</p>
+      </div>
+    <% else %>
+      <div class="space-y-10">
+        <% @categories.each do |category| %>
+          <section id="<%= dom_id(category) %>" class="scroll-mt-32" data-menu-tabs-target="section">
+            <% if show_tabs %>
+              <h2 class="mb-4 flex items-baseline gap-2 text-xl font-bold tracking-tight text-foreground">
+                <%= category.name %>
+                <span class="text-sm font-medium text-foreground/50"><%= category.items.size %></span>
+              </h2>
+            <% end %>
+
+            <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+              <%= render partial: "item", collection: category.items, as: :item %>
+            </div>
+          </section>
+        <% end %>
+      </div>
+    <% end %>
+  </main>
+
+  <footer class="pb-8 text-center text-xs text-foreground/40">
+    Menú digital de <%= @restaurant.name %>
+  </footer>
+</div>

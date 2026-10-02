@@ -73,6 +73,69 @@
     </label>
   </section>
 
+  <section
+    class="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 sm:p-8"
+    data-controller="image-preview"
+    data-image-preview-max-files-value="<%= Item::MAX_IMAGES %>"
+    data-image-preview-max-size-value="<%= Item::MAX_IMAGE_SIZE %>"
+    data-image-preview-types-value="<%= Item::IMAGE_TYPES.to_json %>"
+  >
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h2 class="text-sm font-medium text-foreground">
+          Fotos
+          <% if item.new_record? %>
+            <span class="ml-0.5 text-destructive">*</span>
+          <% end %>
+        </h2>
+        <p class="text-xs text-foreground/60">Hasta <%= Item::MAX_IMAGES %> fotos · la primera es la principal</p>
+      </div>
+
+      <span class="text-xs font-medium tabular-nums text-foreground/60" data-image-preview-target="counter"></span>
+    </div>
+
+    <div class="flex flex-wrap gap-3" data-image-preview-target="list">
+      <% item.images.select { |image| image.blob.persisted? }.each do |image| %>
+        <div class="relative size-20 overflow-hidden rounded-md border border-border bg-background" data-image-preview-target="tile">
+          <%= image_tag image.variant(:thumb), alt: item.name, class: "size-full object-cover" %>
+          <%= hidden_field_tag "item[images][]", image.signed_id, id: nil %>
+          <%= render "photo_tile_controls" %>
+        </div>
+      <% end %>
+    </div>
+
+    <template data-image-preview-target="template">
+      <div class="relative size-20 overflow-hidden rounded-md border border-border bg-background" data-image-preview-target="tile">
+        <img class="size-full object-cover" alt="">
+        <%= render "photo_tile_controls" %>
+      </div>
+    </template>
+
+    <label
+      class="flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed border-input bg-background px-6 py-8 text-center transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring hover:border-primary data-dragging:border-primary data-dragging:bg-primary/5"
+      data-image-preview-target="dropzone"
+      data-action="dragover->image-preview#dragOver dragleave->image-preview#dragLeave drop->image-preview#drop"
+    >
+      <span class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <%= render_svg("photo.svg", styles: "size-5") %>
+      </span>
+
+      <span class="text-sm text-foreground/70">
+        Arrastra tus fotos o <span class="font-medium text-primary">explora archivos</span>
+      </span>
+
+      <span class="text-xs text-foreground/50">PNG, JPG o WebP · hasta 10 MB cada una</span>
+
+      <%= form.file_field :images,
+        multiple: true,
+        accept: Item::IMAGE_TYPES.join(","),
+        class: "sr-only",
+        data: { image_preview_target: "input", action: "change->image-preview#select" } %>
+    </label>
+
+    <p class="hidden text-xs font-medium text-destructive" data-image-preview-target="error" role="alert"></p>
+  </section>
+
   <%= render Button::Component.new(
     text: item.new_record? ? "Agregar platillo" : "Guardar cambios",
     type: "submit",

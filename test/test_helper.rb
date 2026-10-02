@@ -11,6 +11,8 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
-    # Add more helper methods to be used by all tests here...
+    def dish_image(name = "dish.jpg")
+      fixture_file_upload(name)
+    end
   end
 end

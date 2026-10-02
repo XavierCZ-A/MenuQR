@@ -1,48 +1,33 @@
 require "test_helper"
 
 class RestaurantsControllerTest < ActionDispatch::IntegrationTest
-  setup do
-    @restaurant = restaurants(:one)
-  end
+  test "public menu shows only available items without login" do
+    items(:taco).update!(available: false)
+    Item.create!(name: "Horchata", price: "30", category: categories(:drinks_one), images: [ dish_image ])
 
-  test "should get index" do
-    get restaurants_url
+    get restaurant_url(restaurants(:one).slug)
+
     assert_response :success
+    assert_select "h1", restaurants(:one).name
+    assert_select "article h3", text: "Horchata"
+    assert_select "article img[alt=Horchata][loading=lazy]"
+    assert_select "article h3", text: "Taco al pastor", count: 0
   end
 
-  test "should get new" do
-    get new_restaurant_url
-    assert_response :success
+  test "hides tabs when only one category has items" do
+    get restaurant_url(restaurants(:one).slug)
+    assert_select "nav[aria-label='Categorías del menú']", 0
   end
 
-  test "should create restaurant" do
-    assert_difference("Restaurant.count") do
-      post restaurants_url, params: { restaurant: { currency: @restaurant.currency, description: @restaurant.description, name: @restaurant.name, published: @restaurant.published, slug: @restaurant.slug } }
-    end
+  test "shows a tab per category with items" do
+    Item.create!(name: "Horchata", price: "30", category: categories(:drinks_one), images: [ dish_image ])
 
-    assert_redirected_to restaurant_url(Restaurant.last)
+    get restaurant_url(restaurants(:one).slug)
+    assert_select "[data-menu-tabs-target=tab]", 2
   end
 
-  test "should show restaurant" do
-    get restaurant_url(@restaurant)
-    assert_response :success
-  end
-
-  test "should get edit" do
-    get edit_restaurant_url(@restaurant)
-    assert_response :success
-  end
-
-  test "should update restaurant" do
-    patch restaurant_url(@restaurant), params: { restaurant: { currency: @restaurant.currency, description: @restaurant.description, name: @restaurant.name, published: @restaurant.published, slug: @restaurant.slug } }
-    assert_redirected_to restaurant_url(@restaurant)
-  end
-
-  test "should destroy restaurant" do
-    assert_difference("Restaurant.count", -1) do
-      delete restaurant_url(@restaurant)
-    end
-
-    assert_redirected_to restaurants_url
+  test "unknown slug is not found" do
+    get restaurant_url("no-existe")
+    assert_response :not_found
   end
 end

@@ -70,3 +70,5 @@ end
 
 gem "view_component"
 gem "tailwind_merge", "~> 1.4"
+gem "ruby-vips"
+gem "rqrcode"

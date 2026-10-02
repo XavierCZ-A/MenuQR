@@ -6,6 +6,7 @@
   <section class="space-y-5">
     <div class="space-y-1">
       <p class="text-xs font-semibold tracking-widest text-foreground/50 uppercase">Tu restaurante</p>
+
       <h1 class="text-2xl font-bold tracking-tight text-foreground md:text-3xl"><%= current_restaurant.name %></h1>
 
       <% if current_restaurant.description.present? %>
@@ -14,7 +15,10 @@
     </div>
 
     <div
-      class="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between"
+      class="
+        flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center
+        sm:justify-between
+      "
       data-controller="clipboard"
       data-clipboard-text-value="<%= menu_url %>"
     >
@@ -57,7 +61,7 @@
     <% [["Platillos", @items.size], ["Disponibles", available_count], ["Ocultos", @items.size - available_count]].each do |label, value| %>
       <div class="rounded-lg border border-border bg-card p-4 md:p-5">
         <p class="text-xs font-medium text-foreground/60 md:text-sm"><%= label %></p>
-        <p class="mt-1 text-2xl font-bold tabular-nums text-foreground md:text-3xl"><%= value %></p>
+        <p class="mt-1 text-2xl font-bold text-foreground tabular-nums md:text-3xl"><%= value %></p>
       </div>
     <% end %>
   </section>
@@ -71,7 +75,7 @@
 
       <% if @items.any? %>
         <%= render Button::Component.new(
-          text: "Agregar",
+          text: "Nuevo platillo",
           href: new_admin_item_path,
           icon: render_svg("plus.svg", styles: "size-full"),
           classes: "shrink-0",
@@ -80,7 +84,12 @@
     </div>
 
     <% if @items.empty? %>
-      <div class="flex flex-col items-center gap-4 rounded-lg border border-dashed border-border bg-card px-6 py-14 text-center">
+      <div
+        class="
+          flex flex-col items-center gap-4 rounded-lg border border-dashed border-border bg-card px-6 py-14
+          text-center
+        "
+      >
         <span class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
           <%= render_svg("plus.svg", styles: "size-6") %>
         </span>
