@@ -1,0 +1,83 @@
+<%# locals: (item:, categories:) %>
+<%= form_with(model: [:admin, item], class: "mx-auto w-full max-w-xl space-y-6") do |form| %>
+  <% if item.errors.any? %>
+    <div class="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive" role="alert">
+      <p class="font-medium">
+        No se pudo guardar el platillo (<%= pluralize(item.errors.count, "error", "errores") %>)
+      </p>
+
+      <ul class="mt-2 list-disc space-y-1 pl-5">
+        <% item.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <section class="flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+    <%= render Input::Component.new(
+      name: "item[name]",
+      type: :text,
+      value: item.name,
+      label: "Nombre",
+      placeholder: "Ej. Tacos al pastor",
+      required: true,
+    ) %>
+
+    <div class="space-y-2">
+      <%= form.label :description, "Descripción", class: "block text-sm font-medium text-foreground" %>
+
+      <%= form.text_area :description,
+        rows: 3,
+        placeholder: "Ingredientes, porción o lo que haga único al platillo",
+        class: "block min-h-24 w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-foreground/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50" %>
+    </div>
+
+    <%= render Input::Component.new(
+      name: "item[price]",
+      type: :number,
+      value: (format("%.2f", item.price) if item.price),
+      label: "Precio (MXN)",
+      placeholder: "0.00",
+      required: true,
+      min: "0.01",
+      step: "0.01",
+      inputmode: "decimal",
+    ) %>
+
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <%= render Select::Component.new(
+        name: "item[category_id]",
+        collection: categories,
+        selected: item.category_id,
+        label: "Categoría",
+        required: true
+      ) %>
+
+      <%= render Input::Component.new(
+        name: "item[new_category_name]",
+        value: params.dig(:item, :new_category_name),
+        label: "O crea una nueva",
+        placeholder: "Ej. Bebidas",
+        maxlength: 50,
+      ) %>
+    </div>
+
+    <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4">
+      <%= form.check_box :available, class: "size-4 rounded border-input accent-primary" %>
+
+      <span class="space-y-0.5">
+        <span class="block text-sm font-medium text-foreground">Disponible</span>
+        <span class="block text-xs text-foreground/60">Desmárcalo para ocultarlo del menú sin borrarlo</span>
+      </span>
+    </label>
+  </section>
+
+  <%= render Button::Component.new(
+    text: item.new_record? ? "Agregar platillo" : "Guardar cambios",
+    type: "submit",
+    size: :lg,
+    full_width: true,
+    data: { turbo_submits_with: "Guardando…" },
+  ) %>
+<% end %>

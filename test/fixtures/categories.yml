@@ -1,0 +1,11 @@
+general_one:
+  name: General
+  restaurant: one
+
+drinks_one:
+  name: Bebidas
+  restaurant: one
+
+general_two:
+  name: General
+  restaurant: two

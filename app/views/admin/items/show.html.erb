@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @item %>
+
+<div>
+  <%= link_to "Edit this item", edit_admin_item_path(@item) %> |
+  <%= link_to "Back to items", admin_items_path %>
+
+  <%= button_to "Destroy this item", [:admin, @item], method: :delete %>
+</div>

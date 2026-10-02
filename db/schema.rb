@@ -10,7 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_30_212807) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_01_230000) do
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.integer "restaurant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["restaurant_id", "name"], name: "index_categories_on_restaurant_id_and_name", unique: true
+    t.index ["restaurant_id"], name: "index_categories_on_restaurant_id"
+  end
+
+  create_table "items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.integer "price_cents", null: false
+    t.boolean "available", default: true
+    t.integer "category_id", null: false
+    t.index ["category_id"], name: "index_items_on_category_id"
+  end
+
   create_table "restaurants", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -40,6 +60,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_212807) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "categories", "restaurants"
+  add_foreign_key "items", "categories"
   add_foreign_key "restaurants", "users"
   add_foreign_key "sessions", "users"
 end

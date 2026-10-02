@@ -1,0 +1,14 @@
+<nav class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white px-4 md:px-8">
+  <div class="mx-auto flex h-16 max-w-7xl items-center justify-between">
+    <div class="flex w-full items-center justify-between">
+      <div class="flex items-center">
+        <div class="ml-10 flex items-center gap-3">
+          <%= helpers.nav_link "Inicio", admin_root_path %>
+          <%= helpers.nav_link "Productos", admin_products_path %>
+          <%= helpers.nav_link "Pedidos", admin_storefront_path %>
+          <%= helpers.nav_link "Tienda", edit_admin_storefront_path %>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

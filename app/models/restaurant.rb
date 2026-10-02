@@ -1,13 +1,20 @@
 class Restaurant < ApplicationRecord
   belongs_to :user
+  has_many :categories, dependent: :destroy
+  has_many :items, through: :categories
 
   validates :name, presence: true
   validates :slug, presence: true
   validate :user_within_restaurant_limit
 
   before_validation :generate_slug, on: :create
+  after_create :create_default_category
 
   private
+    def create_default_category
+      categories.create!(name: Category::DEFAULT_NAME)
+    end
+
     def user_within_restaurant_limit
       return unless user
 

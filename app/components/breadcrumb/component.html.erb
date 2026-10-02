@@ -1,0 +1,17 @@
+<nav aria-label="Breadcrumb" class="flex justify-center">
+  <ol class="flex items-center space-x-2 text-sm">
+    <% visible_items.each_with_index do |item, index| %>
+      <li class="flex items-center space-x-2">
+        <% unless first_item?(index) %>
+          <%= separator_html %>
+        <% end %>
+
+        <% if last_item?(index) %>
+          <span class="<%= current_classes %>" aria-current="page"><%= item[:label] %></span>
+        <% else %>
+          <a href="<%= item[:href] || '#' %>" class="<%= link_classes %>"><%= item[:label] %></a>
+        <% end %>
+      </li>
+    <% end %>
+  </ol>
+</nav>
