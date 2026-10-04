@@ -7,4 +7,6 @@ class Category < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :restaurant_id }
 
   normalizes :name, with: ->(name) { name.strip }
+
+  before_create { self.position ||= restaurant.categories.maximum(:position).to_i + 1 }
 end

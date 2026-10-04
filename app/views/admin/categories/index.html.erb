@@ -1,0 +1,63 @@
+<% content_for :title, "Ordenar categorías" %>
+
+<main class="px-4 py-8 md:px-8 md:py-10">
+  <%= render "admin/items/page_header", title: "Ordenar categorías", eyebrow: "Menú" %>
+
+  <div
+    class="mx-auto max-w-xl space-y-6"
+    data-controller="sortable"
+    data-sortable-url-value="<%= order_admin_categories_path %>"
+  >
+    <section class="space-y-2" aria-label="Vista previa">
+      <p class="text-xs font-medium text-foreground/60">Así se verán las pestañas en tu menú</p>
+      <div class="flex gap-2 overflow-x-auto rounded-lg border border-border bg-card p-3 [scrollbar-width:none]" data-sortable-target="preview" aria-hidden="true">
+        <% @categories.each do |category| %>
+          <% next if category.items_count.zero? %>
+          <span
+            data-id="<%= category.id %>"
+            class="shrink-0 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium whitespace-nowrap text-foreground/70 first:border-primary first:bg-primary first:text-primary-foreground"
+          >
+            <%= category.name %>
+          </span>
+        <% end %>
+      </div>
+    </section>
+
+    <section class="space-y-2">
+      <p class="text-sm text-foreground/60">
+        Arrastra desde <%= render_svg("grip.svg", styles: "inline size-4 align-text-bottom") %> para cambiar el orden.
+      </p>
+
+      <ul class="divide-y divide-border overflow-hidden rounded-lg border border-border bg-card" data-sortable-target="list">
+        <% @categories.each do |category| %>
+          <li data-id="<%= category.id %>" class="flex items-center gap-3 bg-card px-3 py-3 md:px-4">
+            <button
+              type="button"
+              class="flex size-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-foreground/40 transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-2 focus-visible:outline-ring active:cursor-grabbing"
+              aria-label="Mover <%= category.name %>. Usa las flechas arriba y abajo."
+              data-sortable-handle
+              data-action="keydown->sortable#move"
+            >
+              <%= render_svg("grip.svg", styles: "size-5") %>
+            </button>
+
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium text-foreground"><%= category.name %></p>
+              <% if category.items_count.zero? %>
+                <p class="text-xs text-foreground/60">Sin platillos · no aparece en el menú</p>
+              <% else %>
+                <p class="text-xs text-foreground/60"><%= pluralize(category.items_count, "platillo", "platillos") %></p>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+
+      <p class="flex min-h-5 items-center gap-1.5 text-xs text-foreground/60" role="status" aria-live="polite" data-sortable-target="status">
+        Los cambios se guardan automáticamente.
+      </p>
+    </section>
+
+    <%= render Button::Component.new(text: "Listo", href: admin_root_path, full_width: true) %>
+  </div>
+</main>

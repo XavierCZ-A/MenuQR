@@ -18,3 +18,6 @@ application.register("menu-tabs", MenuTabsController)
 
 import PasswordController from "./password_controller"
 application.register("password", PasswordController)
+
+import SortableController from "./sortable_controller"
+application.register("sortable", SortableController)

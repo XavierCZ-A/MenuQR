@@ -8,6 +8,7 @@
           <%= helpers.render_svg("qr_code.svg", styles: "size-4") %>
         </span>
       <% end %>
+
       <span class="truncate text-sm font-semibold text-foreground"><%= restaurant.name %></span>
     <% end %>
 
@@ -21,16 +22,6 @@
         icon_position: :right,
         target: "_blank",
         rel: "noopener",
-      ) %>
-
-      <%= render Button::Component.new(
-        variant: :ghost,
-        size: :sm,
-        icon_only: true,
-        href: helpers.edit_admin_restaurant_path,
-        icon: helpers.render_svg("cog.svg", styles: "size-full"),
-        title: "Configuración",
-        aria: { label: "Configuración del restaurante" },
       ) %>
 
       <%= form_with url: session_path, method: :delete do %>

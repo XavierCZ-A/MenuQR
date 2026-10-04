@@ -1,11 +1,14 @@
 general_one:
   name: General
   restaurant: one
+  position: 1
 
 drinks_one:
   name: Bebidas
   restaurant: one
+  position: 2
 
 general_two:
   name: General
   restaurant: two
+  position: 1

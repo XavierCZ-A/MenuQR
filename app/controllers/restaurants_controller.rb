@@ -9,7 +9,7 @@ class RestaurantsController < ApplicationController
     @categories = @restaurant.categories
       .eager_load(:items)
       .where(items: { available: true })
-      .order(:name, "items.name")
+      .order(:position, "items.name")
       .preload(items: { images_attachments: { blob: { variant_records: { image_attachment: :blob } } } })
   end
 end

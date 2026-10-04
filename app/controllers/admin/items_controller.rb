@@ -38,7 +38,7 @@ class Admin::ItemsController < Admin::BaseController
     end
 
     def set_categories
-      @categories = current_restaurant.categories.order(:name)
+      @categories = current_restaurant.categories.order(:position)
     end
 
     def item_params
