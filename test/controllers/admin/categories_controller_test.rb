@@ -22,7 +22,7 @@ class Admin::CategoriesControllerTest < ActionDispatch::IntegrationTest
     patch order_admin_categories_url, params: { category_ids: [ categories(:drinks_one).id, categories(:general_one).id ] }, as: :json
     assert_response :no_content
 
-    get restaurant_url(restaurants(:one).slug)
+    get public_menu_url(restaurants(:one))
     assert_select "[data-menu-tabs-target=tab]" do |tabs|
       assert_equal %w[ Bebidas General ], tabs.map(&:text)
     end

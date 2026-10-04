@@ -11,7 +11,7 @@ module Navbar
     end
 
     def menu_url
-      helpers.restaurant_url(restaurant.slug)
+      helpers.public_menu_url(restaurant)
     end
   end
 end

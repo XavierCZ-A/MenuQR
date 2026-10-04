@@ -21,6 +21,9 @@ module MenuQr
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
+    # Bare domain for admin/auth; public menus are served from its subdomains.
+    config.x.app_host = ENV.fetch("APP_HOST", "localhost")
+
     config.i18n.default_locale = :es
     config.i18n.available_locales = [ :es ]
     # Lets config/locales/es.yml set a per-attribute full message format.

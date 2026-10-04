@@ -1,9 +1,9 @@
 class Admin::QrCodesController < Admin::BaseController
   def show
     # The menu URL only depends on the slug, which never changes.
-    return unless stale?(etag: restaurant_url(current_restaurant.slug))
+    return unless stale?(etag: public_menu_url(current_restaurant))
 
-    qr_code = RQRCode::QRCode.new(restaurant_url(current_restaurant.slug))
+    qr_code = RQRCode::QRCode.new(public_menu_url(current_restaurant))
     filename = "menu-#{current_restaurant.slug}"
 
     respond_to do |format|

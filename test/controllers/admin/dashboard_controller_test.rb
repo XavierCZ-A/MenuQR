@@ -25,4 +25,10 @@ class Admin::DashboardControllerTest < ActionDispatch::IntegrationTest
     get admin_root_url
     assert_select "p", "Aún no tienes platillos"
   end
+
+  test "shows the subdomain menu URL" do
+    sign_in_as users(:one)
+    get admin_root_url
+    assert_select "p.font-mono", text: "http://taqueria-uno.localhost/"
+  end
 end

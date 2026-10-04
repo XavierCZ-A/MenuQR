@@ -3,7 +3,7 @@
 <% content_for :head do %>
   <meta property="og:type" content="website">
   <meta property="og:title" content="<%= @restaurant.name %>">
-  <meta property="og:url" content="<%= restaurant_url(@restaurant.slug) %>">
+  <meta property="og:url" content="<%= public_menu_url(@restaurant) %>">
   <% if @restaurant.description.present? %>
     <meta property="og:description" content="<%= @restaurant.description %>">
     <meta name="description" content="<%= @restaurant.description %>">

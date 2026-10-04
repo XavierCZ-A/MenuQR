@@ -6,6 +6,16 @@ class RestaurantTest < ActiveSupport::TestCase
     assert_equal "taqueria-uno-2", restaurant.slug
   end
 
+  test "slug skips reserved subdomains" do
+    restaurant = Restaurant.create!(name: "WWW", user: User.create!(email_address: "w@example.com", password: "Secreta123"))
+    assert_equal "www-2", restaurant.slug
+  end
+
+  test "slug falls back when the name has no latin characters" do
+    restaurant = Restaurant.create!(name: "寿司", user: User.create!(email_address: "s@example.com", password: "Secreta123"))
+    assert_equal "restaurante", restaurant.slug
+  end
+
   test "editing an item bumps the restaurant so the public menu cache expires" do
     restaurant = restaurants(:one)
     assert_changes -> { restaurant.reload.updated_at } do

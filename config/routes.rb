@@ -1,9 +1,16 @@
 Rails.application.routes.draw do
+  constraints(MenuSubdomain) do
+    get "/", to: "restaurants#show", as: :restaurant_menu
+  end
+
+  direct :public_menu do |restaurant|
+    restaurant_menu_url(host: "#{restaurant.slug}.#{Rails.configuration.x.app_host}")
+  end
+
   resource :session, only: [ :new, :create, :destroy ], path: "login", path_names: { new: "/" }
   resources :users, only: [ :new, :create ], path: "register", path_names: { new: "/" }
 
   resources :passwords, param: :token
-  resources :restaurants, only: [ :show ], param: :slug
 
   namespace :admin, path: "dashboard" do
     root "dashboard#show"

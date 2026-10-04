@@ -1,5 +1,7 @@
 class Restaurant < ApplicationRecord
   IMAGES = %i[ logo banner ].freeze
+  # Slugs are menu subdomains, so they can't take names the app or DNS need.
+  RESERVED_SLUGS = %w[ www app admin api dashboard mail email smtp imap pop ftp cdn static assets blog help ayuda soporte status ].freeze
 
   has_one_attached :logo, dependent: :purge_later do |attachable|
     attachable.variant :thumb, resize_to_fill: [ 160, 160 ], format: :webp
@@ -63,11 +65,11 @@ class Restaurant < ApplicationRecord
       return if slug.present?
       return if name.blank?
 
-      base_slug = name.parameterize
+      base_slug = name.parameterize.presence || "restaurante"
       candidate = base_slug
       counter = 2
 
-      while Restaurant.exists?(slug: candidate)
+      while RESERVED_SLUGS.include?(candidate) || Restaurant.exists?(slug: candidate)
         candidate = "#{base_slug}-#{counter}"
         counter += 1
       end

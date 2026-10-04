@@ -1,5 +1,5 @@
 <% content_for :title, "Dashboard · #{current_restaurant.name}" %>
-<% menu_url = restaurant_url(current_restaurant.slug) %>
+<% menu_url = public_menu_url(current_restaurant) %>
 <% available_count = @items.count(&:available?) %>
 
 <main class="mx-auto max-w-5xl space-y-8 px-4 py-8 md:px-8 md:py-10">
