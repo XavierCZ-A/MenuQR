@@ -21,7 +21,7 @@ export default class extends Controller {
     this.updateRequirement(this.lengthCheckTarget, password.length >= 8);
     this.updateRequirement(this.lowercaseCheckTarget, /[a-z]/.test(password));
     this.updateRequirement(this.uppercaseCheckTarget, /[A-Z]/.test(password));
-    this.updateRequirement(this.numberCheckTarget, /[0-9!@#$%^&*]/.test(password));
+    this.updateRequirement(this.numberCheckTarget, /\d/.test(password));
   }
 
   updateRequirement(target, met) {
@@ -33,16 +33,16 @@ export default class extends Controller {
     const text = target.querySelector("span");
 
     if (met) {
-      target.classList.remove("text-neutral-500");
-      target.classList.add("text-green-600");
+      target.classList.remove("text-foreground/60");
+      target.classList.add("text-primary");
 
       if (uncheckedIcon) uncheckedIcon.classList.add("hidden");
       if (checkedIcon) checkedIcon.classList.remove("hidden");
 
       if (text) text.classList.add("line-through");
     } else {
-      target.classList.remove("text-green-600");
-      target.classList.add("text-neutral-500");
+      target.classList.remove("text-primary");
+      target.classList.add("text-foreground/60");
 
       if (uncheckedIcon) uncheckedIcon.classList.remove("hidden");
       if (checkedIcon) checkedIcon.classList.add("hidden");

@@ -1,10 +1,10 @@
 <div class="<%= wrapper_classes %>">
   <% if @label.present? %>
-    <label for="<%= @id %>" class="text-sm font-medium text-primary">
+    <label for="<%= @id %>" class="text-sm font-medium text-foreground">
       <%= @label %>
 
       <% if @required %>
-        <span class="text-red-500">*</span>
+        <span class="ml-0.5 text-destructive">*</span>
       <% end %>
     </label>
   <% end %>
@@ -39,7 +39,7 @@
     <!-- Requirements checklist -->
     <div class="mt-3 space-y-1.5">
       <div
-        class="flex items-center gap-2 text-sm text-neutral-500 transition-colors"
+        class="flex items-center gap-2 text-sm text-foreground/60 transition-colors"
         data-password-target="lengthCheck"
       >
         <svg
@@ -83,7 +83,7 @@
       </div>
 
       <div
-        class="flex items-center gap-2 text-sm text-neutral-500 transition-colors"
+        class="flex items-center gap-2 text-sm text-foreground/60 transition-colors"
         data-password-target="lowercaseCheck"
       >
         <svg
@@ -127,7 +127,7 @@
       </div>
 
       <div
-        class="flex items-center gap-2 text-sm text-neutral-500 transition-colors"
+        class="flex items-center gap-2 text-sm text-foreground/60 transition-colors"
         data-password-target="uppercaseCheck"
       >
         <svg
@@ -171,7 +171,7 @@
       </div>
 
       <div
-        class="flex items-center gap-2 text-sm text-neutral-500 transition-colors"
+        class="flex items-center gap-2 text-sm text-foreground/60 transition-colors"
         data-password-target="numberCheck"
       >
         <svg
@@ -211,14 +211,13 @@
           </g>
         </svg>
 
-        <span>Un número o carácter especial</span>
+        <span>Un número</span>
       </div>
     </div>
   </div>
 
   <% if @error.present? %>
     <p class="<%= error_classes %>"><%= @error %></p>
-    <p>Hola errores</p>
   <% elsif @hint.present? %>
     <p class="<%= hint_classes %>"><%= @hint %></p>
   <% end %>

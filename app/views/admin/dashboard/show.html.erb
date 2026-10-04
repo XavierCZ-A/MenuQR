@@ -38,9 +38,9 @@
       data-clipboard-text-value="<%= menu_url %>"
     >
       <div class="flex min-w-0 items-center gap-3">
-        <span class="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-          <%= render_svg("qr_code.svg", styles: "size-5") %>
-        </span>
+        <%= image_tag admin_qr_code_path(format: :svg),
+          alt: "Código QR de tu menú",
+          class: "size-20 shrink-0 border border-border bg-white p-1" %>
 
         <div class="min-w-0">
           <p class="text-xs font-medium text-foreground/60">Enlace de tu menú</p>
@@ -59,13 +59,11 @@
         ) %>
 
         <%= render Button::Component.new(
-          text: "Abrir",
-          variant: :outline,
+          text: "Descargar QR",
           size: :sm,
-          href: menu_url,
-          icon: render_svg("external_link.svg", styles: "size-full"),
-          target: "_blank",
-          rel: "noopener",
+          href: admin_qr_code_path(format: :png),
+          icon: render_svg("qr_code.svg", styles: "size-full"),
+          download: "",
           classes: "flex-1 sm:flex-none",
         ) %>
       </div>

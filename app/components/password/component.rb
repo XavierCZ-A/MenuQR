@@ -57,11 +57,11 @@ module Password
     end
 
     def error_classes
-      "text-xs text-red-600 mt-1"
+      "text-xs text-destructive mt-1"
     end
 
     def hint_classes
-      "text-xs text-neutral-500 mt-1"
+      "text-xs text-foreground/60 mt-1"
     end
 
     private

@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     root "dashboard#show"
 
     resource :restaurant, only: %i[ edit update ], path: "settings", path_names: { edit: "/" }
+    resource :qr_code, only: :show, path: "qr"
 
     resources :items, except: %i[ index show ] do
       resource :availability, only: %i[ create destroy ], module: :items

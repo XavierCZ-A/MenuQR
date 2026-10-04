@@ -35,6 +35,21 @@ class RestaurantsControllerTest < ActionDispatch::IntegrationTest
     assert_select "header li", text: "Roma Norte"
   end
 
+  test "answers 304 when the menu has not changed" do
+    get restaurant_url(restaurants(:one).slug)
+    get restaurant_url(restaurants(:one).slug), headers: { "If-None-Match" => response.etag }
+    assert_response :not_modified
+  end
+
+  test "shares the banner as Open Graph image" do
+    restaurants(:one).update!(banner: dish_image, description: "Tacos de la casa")
+
+    get restaurant_url(restaurants(:one).slug)
+    assert_select "meta[property='og:title'][content=?]", restaurants(:one).name
+    assert_select "meta[property='og:description'][content=?]", "Tacos de la casa"
+    assert_select "meta[property='og:image'][content^=http]"
+  end
+
   test "unknown slug is not found" do
     get restaurant_url("no-existe")
     assert_response :not_found

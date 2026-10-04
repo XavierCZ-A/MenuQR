@@ -1,4 +1,6 @@
 module ApplicationHelper
+  TW_MERGER = TailwindMerge::Merger.new
+
   def render_svg(name, styles: "w-6 h-6")
     file_path = Rails.root.join("app/assets/images", name)
     return unless File.exist?(file_path)
@@ -11,7 +13,7 @@ module ApplicationHelper
   end
 
   def tw(*classes)
-    TailwindMerge::Merger.new.merge(classes.compact.join(" "))
+    TW_MERGER.merge(classes.compact.join(" "))
   end
 
   def nav_link(text, path)

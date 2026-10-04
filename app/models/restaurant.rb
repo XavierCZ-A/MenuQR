@@ -63,7 +63,7 @@ class Restaurant < ApplicationRecord
       return if slug.present?
       return if name.blank?
 
-      base_slug = slugify(name)
+      base_slug = name.parameterize
       candidate = base_slug
       counter = 2
 
@@ -73,20 +73,5 @@ class Restaurant < ApplicationRecord
       end
 
       self.slug = candidate
-    end
-
-    def slugify(text)
-      text.to_s
-          .downcase
-          .strip
-          .gsub(/[áàäâã]/, "a")
-          .gsub(/[éèëê]/, "e")
-          .gsub(/[íìïî]/, "i")
-          .gsub(/[óòöôõ]/, "o")
-          .gsub(/[úùüû]/, "u")
-          .gsub(/ñ/, "n")
-          .gsub(/\s+/, "-")
-          .gsub(/[^\w\-]/, "")
-          .gsub(/\-\-+/, "-")
     end
 end

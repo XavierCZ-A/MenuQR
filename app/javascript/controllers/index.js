@@ -10,9 +10,6 @@ application.register("clipboard", ClipboardController)
 import FilePreviewController from "./file_preview_controller"
 application.register("file-preview", FilePreviewController)
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
-
 import ImagePreviewController from "./image_preview_controller"
 application.register("image-preview", ImagePreviewController)
 

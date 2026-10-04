@@ -28,7 +28,27 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-background text-foreground">
+    <main class="flex min-h-screen flex-col items-center justify-center gap-6 px-4 py-12">
+      <div class="w-full max-w-md rounded-2xl border border-border bg-card p-6 sm:p-10">
+        <% if alert.present? %>
+          <p class="mb-5 flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-medium text-foreground" role="alert">
+            <%= render_svg("exclamation_circle.svg", styles: "size-5 shrink-0 text-destructive") %>
+            <%= alert %>
+          </p>
+        <% end %>
+
+        <% if notice.present? %>
+          <p class="mb-5 flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary" role="status">
+            <%= render_svg("check.svg", styles: "size-5 shrink-0") %>
+            <%= notice %>
+          </p>
+        <% end %>
+
+        <%= yield %>
+      </div>
+
+      <%# TODO: image here %>
+    </main>
   </body>
 </html>

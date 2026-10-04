@@ -8,7 +8,7 @@ class Item < ApplicationRecord
     attachable.variant :card, resize_to_fill: [ 800, 600 ], format: :webp
   end
 
-  belongs_to :category
+  belongs_to :category, touch: true
 
   validates :name, presence: true
   validates :price_cents, numericality: { only_integer: true, greater_than: 0 }
