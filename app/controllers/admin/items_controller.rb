@@ -60,5 +60,8 @@ class Admin::ItemsController < Admin::BaseController
 
         item.save || raise(ActiveRecord::Rollback)
       end
+    rescue ActiveRecord::RecordInvalid => error
+      error.record.errors.each { |category_error| item.errors.add(:category, category_error.message) }
+      false
     end
 end

@@ -88,15 +88,12 @@
 
       <% if @items.any? %>
         <div class="flex shrink-0 gap-2">
-          <% if @categories.size > 1 %>
-            <%= render Button::Component.new(
-              text: "Ordenar",
-              variant: :outline,
-              href: admin_categories_path,
-              icon: render_svg("arrows_up_down.svg", styles: "size-full"),
-              title: "Ordenar categorías del menú",
-            ) %>
-          <% end %>
+          <%= render Button::Component.new(
+            text: "Categorías",
+            variant: :outline,
+            href: admin_categories_path,
+            icon: render_svg("queue_list.svg", styles: "size-full"),
+          ) %>
 
           <%= render Button::Component.new(
             text: "Nuevo platillo",

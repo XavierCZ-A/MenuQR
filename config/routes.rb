@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     resource :restaurant, only: %i[ edit update ], path: "settings", path_names: { edit: "/" }
     resource :qr_code, only: :show, path: "qr"
 
-    resources :categories, only: :index do
+    resources :categories, only: %i[ index create update destroy ] do
       patch :order, on: :collection, action: :update_order
     end
 

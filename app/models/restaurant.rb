@@ -21,7 +21,7 @@ class Restaurant < ApplicationRecord
   validates :name, presence: true, length: { maximum: 60 }
   validates :description, length: { maximum: 280 }
   validates :address, :hours, length: { maximum: 80 }
-  validates :slug, presence: true
+  validates :slug, presence: true, if: :name?
   validate :user_within_restaurant_limit, on: :create
   validate :acceptable_images
 
@@ -36,7 +36,7 @@ class Restaurant < ApplicationRecord
         next unless blob
 
         errors.add(name, "debe ser JPG, PNG o WebP") unless Item::IMAGE_TYPES.include?(blob.content_type)
-        errors.add(name, "es muy pesada (máximo 10 MB)") if blob.byte_size > Item::MAX_IMAGE_SIZE
+        errors.add(name, "es muy pesado (máximo 10 MB)") if blob.byte_size > Item::MAX_IMAGE_SIZE
       end
     end
 

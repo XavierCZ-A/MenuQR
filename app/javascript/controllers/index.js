@@ -13,6 +13,9 @@ application.register("file-preview", FilePreviewController)
 import ImagePreviewController from "./image_preview_controller"
 application.register("image-preview", ImagePreviewController)
 
+import InlineEditController from "./inline_edit_controller"
+application.register("inline-edit", InlineEditController)
+
 import MenuTabsController from "./menu_tabs_controller"
 application.register("menu-tabs", MenuTabsController)
 

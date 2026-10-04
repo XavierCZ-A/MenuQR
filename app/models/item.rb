@@ -26,9 +26,9 @@ class Item < ApplicationRecord
   private
     def image_count_within_limits
       if images.length > MAX_IMAGES
-        errors.add(:images, "máximo #{MAX_IMAGES} imágenes por platillo")
+        errors.add(:images, "Máximo #{MAX_IMAGES} imágenes por platillo")
       elsif new_record? && images.empty?
-        errors.add(:images, "debes subir al menos 1 imagen")
+        errors.add(:images, "Debes subir al menos 1 imagen")
       end
     end
 

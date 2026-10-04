@@ -1,4 +1,5 @@
-You can reset your password on
+Puedes restablecer tu contraseña en
 <%= edit_password_url(@user.password_reset_token) %>
 
-This link will expire in <%= distance_of_time_in_words(0, @user.password_reset_token_expires_in) %>.
+El enlace expira en <%= @user.password_reset_token_expires_in.in_minutes.to_i %> minutos.
+Si no pediste este cambio, ignora este correo.

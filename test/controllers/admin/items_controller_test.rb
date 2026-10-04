@@ -106,4 +106,23 @@ class Admin::ItemsControllerTest < ActionDispatch::IntegrationTest
     get edit_admin_item_url(items(:taco))
     assert_select "input[type=hidden][name='item[images][]'][value=?]", items(:taco).images.first.signed_id
   end
+
+  test "new category field starts hidden and disabled" do
+    get new_admin_item_url
+    assert_select "input[name='item[new_category_name]'][disabled]"
+    assert_select "select[name='item[category_id]']:not([disabled])"
+  end
+
+  test "re-renders with the new category field open when saving fails" do
+    post admin_items_url, params: { item: { name: "", price: "50", new_category_name: "Postres" } }
+    assert_response :unprocessable_content
+    assert_select "input[name='item[new_category_name]'][value=Postres]:not([disabled])"
+    assert_select "select[name='item[category_id]'][disabled]"
+  end
+
+  test "a too long new category name is a validation error, not a crash" do
+    post admin_items_url, params: { item: { name: "Flan", price: "50", new_category_name: "x" * 51, images: [ dish_image ] } }
+    assert_response :unprocessable_content
+    assert_select "[role=alert] li", text: /demasiado largo/
+  end
 end

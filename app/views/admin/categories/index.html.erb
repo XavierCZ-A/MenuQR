@@ -1,7 +1,7 @@
-<% content_for :title, "Ordenar categorías" %>
+<% content_for :title, "Categorías" %>
 
 <main class="px-4 py-8 md:px-8 md:py-10">
-  <%= render "admin/items/page_header", title: "Ordenar categorías", eyebrow: "Menú" %>
+  <%= render "admin/items/page_header", title: "Categorías", eyebrow: "Menú" %>
 
   <div
     class="mx-auto max-w-xl space-y-6"
@@ -10,7 +10,7 @@
   >
     <section class="space-y-2" aria-label="Vista previa">
       <p class="text-xs font-medium text-foreground/60">Así se verán las pestañas en tu menú</p>
-      <div class="flex gap-2 overflow-x-auto rounded-lg border border-border bg-card p-3 [scrollbar-width:none]" data-sortable-target="preview" aria-hidden="true">
+      <div class="flex min-h-14 gap-2 overflow-x-auto rounded-lg border border-border bg-card p-3 [scrollbar-width:none]" data-sortable-target="preview" aria-hidden="true">
         <% @categories.each do |category| %>
           <% next if category.items_count.zero? %>
           <span
@@ -28,33 +28,148 @@
         Arrastra desde <%= render_svg("grip.svg", styles: "inline size-4 align-text-bottom") %> para cambiar el orden.
       </p>
 
-      <ul class="divide-y divide-border overflow-hidden rounded-lg border border-border bg-card" data-sortable-target="list">
-        <% @categories.each do |category| %>
-          <li data-id="<%= category.id %>" class="flex items-center gap-3 bg-card px-3 py-3 md:px-4">
-            <button
-              type="button"
-              class="flex size-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-foreground/40 transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-2 focus-visible:outline-ring active:cursor-grabbing"
-              aria-label="Mover <%= category.name %>. Usa las flechas arriba y abajo."
-              data-sortable-handle
-              data-action="keydown->sortable#move"
-            >
-              <%= render_svg("grip.svg", styles: "size-5") %>
-            </button>
+      <div class="overflow-hidden rounded-lg border border-border bg-card">
+        <ul class="divide-y divide-border" data-sortable-target="list">
+          <% @categories.each do |category| %>
+            <% editing = @failed_category&.id == category.id %>
+            <li id="<%= dom_id(category) %>" data-id="<%= category.id %>" class="flex items-center gap-2 bg-card px-2 py-2 md:px-3" data-controller="inline-edit">
+              <button
+                type="button"
+                class="flex size-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-foreground/40 transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-2 focus-visible:outline-ring active:cursor-grabbing"
+                aria-label="Mover <%= category.name %>. Usa las flechas arriba y abajo."
+                data-sortable-handle
+                data-action="keydown->sortable#move"
+              >
+                <%= render_svg("grip.svg", styles: "size-5") %>
+              </button>
 
-            <div class="min-w-0 flex-1">
-              <p class="truncate text-sm font-medium text-foreground"><%= category.name %></p>
-              <% if category.items_count.zero? %>
-                <p class="text-xs text-foreground/60">Sin platillos · no aparece en el menú</p>
-              <% else %>
-                <p class="text-xs text-foreground/60"><%= pluralize(category.items_count, "platillo", "platillos") %></p>
+              <div class="flex min-w-0 flex-1 items-center gap-1" data-inline-edit-target="view" <%= "hidden" if editing %>>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium text-foreground"><%= category.name %></p>
+                  <% if category.items_count.zero? %>
+                    <p class="text-xs text-foreground/60">Sin platillos · no aparece en el menú</p>
+                  <% else %>
+                    <p class="text-xs text-foreground/60"><%= pluralize(category.items_count, "platillo", "platillos") %></p>
+                  <% end %>
+                </div>
+
+                <%= render Button::Component.new(
+                  variant: :ghost,
+                  size: :sm,
+                  icon_only: true,
+                  icon: render_svg("pencil.svg", styles: "size-full"),
+                  title: "Renombrar",
+                  aria: { label: "Renombrar #{category.name}" },
+                  data: { action: "inline-edit#edit" },
+                ) %>
+
+                <% deletable = category.items_count.zero? && @categories.size > 1 %>
+                <%= form_with url: admin_category_path(category), method: :delete, class: "flex", data: { turbo_confirm: "¿Eliminar la categoría \"#{category.name}\"?" } do %>
+                  <%= render Button::Component.new(
+                    type: "submit",
+                    variant: :ghost,
+                    size: :sm,
+                    icon_only: true,
+                    icon: render_svg("trash.svg", styles: "size-full"),
+                    disabled: !deletable,
+                    classes: "hover:bg-destructive/10 hover:text-destructive",
+                    title: deletable ? "Eliminar" : (category.items_count.zero? ? "Tu menú necesita al menos una categoría" : "Mueve o borra sus platillos primero"),
+                    aria: { label: "Eliminar #{category.name}" },
+                  ) %>
+                <% end %>
+              </div>
+
+              <%= form_with model: [:admin, (editing ? @failed_category : category)], class: "min-w-0 flex-1", html: { hidden: !editing }, data: { inline_edit_target: "edit" } do |form| %>
+                <div class="flex items-center gap-1">
+                  <div class="min-w-0 flex-1">
+                    <%= render Input::Component.new(
+                      name: "category[name]",
+                      id: "category_name_#{category.id}",
+                      value: form.object.name,
+                      required: true,
+                      maxlength: 50,
+                      aria: { label: "Nombre de la categoría" },
+                      data: { action: "keydown.esc->inline-edit#cancel" },
+                    ) %>
+                  </div>
+
+                  <%= render Button::Component.new(
+                    type: "submit",
+                    variant: :ghost,
+                    size: :sm,
+                    icon_only: true,
+                    icon: render_svg("check.svg", styles: "size-full"),
+                    classes: "text-primary",
+                    aria: { label: "Guardar nombre" },
+                  ) %>
+
+                  <%= render Button::Component.new(
+                    variant: :ghost,
+                    size: :sm,
+                    icon_only: true,
+                    icon: render_svg("x_mark.svg", styles: "size-full"),
+                    aria: { label: "Cancelar" },
+                    data: { action: "inline-edit#cancel" },
+                  ) %>
+                </div>
+
+                <% if editing %>
+                  <p class="mt-1 text-xs text-destructive" role="alert"><%= @failed_category.errors.full_messages.to_sentence %></p>
+                <% end %>
               <% end %>
+            </li>
+          <% end %>
+        </ul>
+
+        <% creating = @new_category.errors.any? %>
+        <div class="border-t border-border" data-controller="inline-edit">
+          <button
+            type="button"
+            class="flex w-full cursor-pointer items-center gap-2 px-2 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring md:px-3"
+            data-inline-edit-target="view"
+            data-action="inline-edit#edit"
+            <%= "hidden" if creating %>
+          >
+            <span class="flex size-10 items-center justify-center"><%= render_svg("plus.svg", styles: "size-5") %></span>
+            Nueva categoría
+          </button>
+
+          <%= form_with model: [:admin, @new_category], class: "px-2 py-2 md:px-3", html: { hidden: !creating }, data: { inline_edit_target: "edit" } do |form| %>
+            <div class="flex items-center gap-1">
+              <div class="min-w-0 flex-1">
+                <%= render Input::Component.new(
+                  name: "category[name]",
+                  id: "new_category_name",
+                  value: form.object.name,
+                  placeholder: "Ej. Postres",
+                  required: true,
+                  maxlength: 50,
+                  aria: { label: "Nombre de la nueva categoría" },
+                  data: { action: "keydown.esc->inline-edit#cancel" },
+                ) %>
+              </div>
+
+              <%= render Button::Component.new(text: "Crear", type: "submit", size: :sm) %>
+
+              <%= render Button::Component.new(
+                variant: :ghost,
+                size: :sm,
+                icon_only: true,
+                icon: render_svg("x_mark.svg", styles: "size-full"),
+                aria: { label: "Cancelar" },
+                data: { action: "inline-edit#cancel" },
+              ) %>
             </div>
-          </li>
-        <% end %>
-      </ul>
+
+            <% if creating %>
+              <p class="mt-1 text-xs text-destructive" role="alert"><%= @new_category.errors.full_messages.to_sentence %></p>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
 
       <p class="flex min-h-5 items-center gap-1.5 text-xs text-foreground/60" role="status" aria-live="polite" data-sortable-target="status">
-        Los cambios se guardan automáticamente.
+        Los cambios de orden se guardan automáticamente.
       </p>
     </section>
 

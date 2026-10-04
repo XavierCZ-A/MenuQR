@@ -45,22 +45,50 @@
       inputmode: "decimal",
     ) %>
 
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-      <%= render Select::Component.new(
-        name: "item[category_id]",
-        collection: categories,
-        selected: item.category_id,
-        label: "Categoría",
-        required: true
-      ) %>
+    <% new_category_name = params.dig(:item, :new_category_name).presence %>
+    <div data-controller="inline-edit">
+      <div class="space-y-2" data-inline-edit-target="view" <%= "hidden" if new_category_name %>>
+        <div class="flex items-center justify-between gap-2">
+          <label for="item_category_id" class="text-sm font-medium text-foreground">
+            Categoría <span class="ml-0.5 text-destructive" aria-hidden="true">*</span>
+          </label>
 
-      <%= render Input::Component.new(
-        name: "item[new_category_name]",
-        value: params.dig(:item, :new_category_name),
-        label: "O crea una nueva",
-        placeholder: "Ej. Bebidas",
-        maxlength: 50,
-      ) %>
+          <button type="button" class="cursor-pointer text-sm font-medium text-primary hover:underline" data-action="inline-edit#edit">
+            + Nueva categoría
+          </button>
+        </div>
+
+        <%= render Select::Component.new(
+          name: "item[category_id]",
+          collection: categories,
+          selected: item.category_id,
+          required: true,
+          disabled: new_category_name.present?,
+        ) %>
+      </div>
+
+      <div class="space-y-2" data-inline-edit-target="edit" <%= "hidden" unless new_category_name %>>
+        <div class="flex items-center justify-between gap-2">
+          <label for="item_new_category_name" class="text-sm font-medium text-foreground">
+            Nueva categoría <span class="ml-0.5 text-destructive" aria-hidden="true">*</span>
+          </label>
+
+          <button type="button" class="cursor-pointer text-sm font-medium text-foreground/60 hover:text-foreground hover:underline" data-action="inline-edit#cancel">
+            Cancelar
+          </button>
+        </div>
+
+        <%= render Input::Component.new(
+          name: "item[new_category_name]",
+          value: new_category_name,
+          placeholder: "Ej. Bebidas",
+          required: true,
+          disabled: new_category_name.nil?,
+          maxlength: 50,
+          data: { action: "keydown.esc->inline-edit#cancel" },
+        ) %>
+        <p class="text-xs text-foreground/60">Se crea al guardar el platillo. Puedes ordenarla después en Categorías.</p>
+      </div>
     </div>
 
     <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4">

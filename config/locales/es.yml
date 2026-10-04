@@ -1,0 +1,103 @@
+es:
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      model_invalid: "La validación falló: %{errors}"
+      inclusion: "no está incluido en la lista"
+      exclusion: "está reservado"
+      invalid: "no es válido"
+      confirmation: "no coincide con %{attribute}"
+      accepted: "debe ser aceptado"
+      empty: "no puede estar vacío"
+      blank: "no puede estar en blanco"
+      present: "debe estar en blanco"
+      too_long:
+        one: "es demasiado largo (máximo 1 carácter)"
+        other: "es demasiado largo (máximo %{count} caracteres)"
+      password_too_long: "es demasiado larga"
+      too_short:
+        one: "es demasiado corto (mínimo 1 carácter)"
+        other: "es demasiado corto (mínimo %{count} caracteres)"
+      wrong_length:
+        one: "no tiene la longitud correcta (debe ser 1 carácter)"
+        other: "no tiene la longitud correcta (debe ser %{count} caracteres)"
+      not_a_number: "no es un número"
+      not_an_integer: "debe ser un número entero"
+      greater_than: "debe ser mayor que %{count}"
+      greater_than_or_equal_to: "debe ser mayor o igual que %{count}"
+      equal_to: "debe ser igual a %{count}"
+      less_than: "debe ser menor que %{count}"
+      less_than_or_equal_to: "debe ser menor o igual que %{count}"
+      other_than: "debe ser distinto de %{count}"
+      in: "debe estar en %{count}"
+      odd: "debe ser impar"
+      even: "debe ser par"
+      required: "es obligatorio"
+      taken: "ya está en uso"
+
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "La validación falló: %{errors}"
+        restrict_dependent_destroy:
+          has_one: "No se puede eliminar porque existe un %{record} relacionado"
+          has_many: "No se puede eliminar porque existen %{record} relacionados"
+      models:
+        user:
+          attributes:
+            password:
+              too_short:
+                one: "es demasiado corta (mínimo 1 carácter)"
+                other: "es demasiado corta (mínimo %{count} caracteres)"
+        item:
+          attributes:
+            category:
+              required: "es obligatoria"
+            images:
+              # Item image messages are complete sentences.
+              format: "%{message}"
+
+    models:
+      user:
+        one: "Usuario"
+        other: "Usuarios"
+      restaurant:
+        one: "Restaurante"
+        other: "Restaurantes"
+      category:
+        one: "Categoría"
+        other: "Categorías"
+      item:
+        one: "Platillo"
+        other: "Platillos"
+
+    attributes:
+      user:
+        email_address: "Correo electrónico"
+        password: "Contraseña"
+        password_confirmation: "Confirmación de contraseña"
+        restaurants: "Restaurante"
+      user/restaurants:
+        name: "Nombre del restaurante"
+        slug: "Enlace del restaurante"
+      restaurant:
+        name: "Nombre"
+        description: "Descripción"
+        address: "Dirección"
+        hours: "Horario"
+        logo: "Logo"
+        banner: "Banner"
+        slug: "Enlace"
+        user: "Usuario"
+      category:
+        name: "Nombre de la categoría"
+        restaurant: "Restaurante"
+        items: "platillos"
+      item:
+        name: "Nombre"
+        description: "Descripción"
+        price: "Precio"
+        price_cents: "Precio"
+        available: "Disponible"
+        images: "Imágenes"
+        category: "Categoría"

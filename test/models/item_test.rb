@@ -17,4 +17,11 @@ class ItemTest < ActiveSupport::TestCase
     restaurant = Restaurant.create!(name: "Nuevo", user: User.create!(email_address: "new@example.com", password: "Secret123"))
     assert_equal [ Category::DEFAULT_NAME ], restaurant.categories.pluck(:name)
   end
+
+  test "validation messages are in Spanish" do
+    item = Item.new
+    assert_not item.valid?
+    assert_equal [ "Categoría es obligatoria", "Nombre no puede estar en blanco", "Precio no es un número", "Debes subir al menos 1 imagen" ],
+      item.errors.full_messages
+  end
 end
