@@ -7,27 +7,29 @@ Rails.application.routes.draw do
     restaurant_menu_url(host: "#{restaurant.slug}.#{Rails.configuration.x.app_host}")
   end
 
-  resource :session, only: [ :new, :create, :destroy ], path: "login", path_names: { new: "/" }
-  resources :users, only: [ :new, :create ], path: "register", path_names: { new: "/" }
+  constraints(MainDomain) do
+    resource :session, only: [ :new, :create, :destroy ], path: "login", path_names: { new: "/" }
+    resources :users, only: [ :new, :create ], path: "register", path_names: { new: "/" }
 
-  resources :passwords, param: :token
+    resources :passwords, param: :token
 
-  namespace :admin, path: "dashboard" do
-    root "dashboard#show"
+    namespace :admin, path: "dashboard" do
+      root "dashboard#show"
 
-    resource :restaurant, only: %i[ edit update ], path: "settings", path_names: { edit: "/" }
-    resource :qr_code, only: :show, path: "qr"
+      resource :restaurant, only: %i[ edit update ], path: "settings", path_names: { edit: "/" }
+      resource :qr_code, only: :show, path: "qr"
 
-    resources :categories, only: %i[ index create update destroy ] do
-      patch :order, on: :collection, action: :update_order
+      resources :categories, only: %i[ index create update destroy ] do
+        patch :order, on: :collection, action: :update_order
+      end
+
+      resources :items, except: %i[ index show ] do
+        resource :availability, only: %i[ create destroy ], module: :items
+      end
     end
 
-    resources :items, except: %i[ index show ] do
-      resource :availability, only: %i[ create destroy ], module: :items
-    end
+    root "admin/dashboard#show"
   end
-
-  root "admin/dashboard#show"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

@@ -2,7 +2,9 @@ class RestaurantsController < ApplicationController
   allow_unauthenticated_access only: :show
 
   def show
-    @restaurant = Restaurant.find_by!(slug: MenuSubdomain.slug_for(request))
+    @restaurant = Restaurant.find_by(slug: MenuSubdomain.slug_for(request))
+    return render :not_found, status: :not_found unless @restaurant
+    return render :unpublished, status: :not_found unless @restaurant.published?
     # Items/categories touch the restaurant, so its updated_at versions the whole menu.
     fresh_when(@restaurant)
 

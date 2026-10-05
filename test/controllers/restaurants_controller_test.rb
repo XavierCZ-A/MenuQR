@@ -53,6 +53,15 @@ class RestaurantsControllerTest < ActionDispatch::IntegrationTest
   test "unknown slug is not found" do
     get "http://no-existe.localhost/"
     assert_response :not_found
+    assert_select "h1", "No encontramos este menú"
+  end
+
+  test "unpublished menu shows it is unavailable" do
+    restaurants(:one).update!(published: false)
+
+    get public_menu_url(restaurants(:one))
+    assert_response :not_found
+    assert_select "h1", "Menú no disponible por ahora"
   end
 
   test "the menu is served from the restaurant subdomain" do
@@ -65,6 +74,23 @@ class RestaurantsControllerTest < ActionDispatch::IntegrationTest
 
     get "http://localhost/"
     assert_redirected_to new_session_url
+  end
+
+  test "menu subdomains only serve the menu" do
+    %w[ /login /register /dashboard /dashboard/settings /passwords/new ].each do |path|
+      get "http://taqueria-uno.localhost#{path}"
+      assert_response :not_found, path
+    end
+  end
+
+  test "menu images still load from the subdomain" do
+    restaurants(:one).update!(logo: dish_image)
+
+    get public_menu_url(restaurants(:one))
+    src = css_select("header img").first["src"]
+    assert_match %r{\Ahttp://taqueria-uno\.localhost/rails/active_storage/}, src
+    get src
+    assert_response :redirect
   end
 
   test "the old path-based menu URL is gone" do

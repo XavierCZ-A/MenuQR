@@ -1,0 +1,90 @@
+<li
+  id="<%= dom_id(category) %>"
+  data-id="<%= category.id %>"
+  class="flex items-center gap-2 bg-card px-2 py-2 md:px-3"
+  data-controller="inline-edit"
+>
+  <button
+    type="button"
+    class="
+      flex size-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-foreground/40
+      transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-2 focus-visible:outline-ring
+      active:cursor-grabbing
+    "
+    aria-label="Mover <%= category.name %>. Usa las flechas arriba y abajo."
+    data-sortable-handle
+    data-action="keydown->sortable#move"
+  >
+    <%= render_svg("grip.svg", styles: "size-5") %>
+  </button>
+
+  <div class="flex min-w-0 flex-1 items-center gap-1" data-inline-edit-target="view" <%= "hidden" if editing? %>>
+    <div class="min-w-0 flex-1">
+      <p class="truncate text-sm font-medium text-foreground"><%= category.name %></p>
+      <p class="text-xs text-foreground/60"><%= items_label %></p>
+    </div>
+
+    <%= render Button::Component.new(
+      variant: :ghost,
+      size: :sm,
+      icon_only: true,
+      icon: render_svg("pencil.svg", styles: "size-full"),
+      title: "Renombrar",
+      aria: { label: "Renombrar #{category.name}" },
+      data: { action: "inline-edit#edit" },
+    ) %>
+
+    <%= form_with url: admin_category_path(category), method: :delete, class: "flex", data: { turbo_confirm: "¿Eliminar la categoría \"#{category.name}\"?" } do %>
+      <%= render Button::Component.new(
+        type: "submit",
+        variant: :ghost,
+        size: :sm,
+        icon_only: true,
+        icon: render_svg("trash.svg", styles: "size-full"),
+        disabled: !deletable?,
+        classes: "hover:bg-destructive/10 hover:text-destructive",
+        title: delete_title,
+        aria: { label: "Eliminar #{category.name}" },
+      ) %>
+    <% end %>
+  </div>
+
+  <%= form_with model: [:admin, form_record], class: "min-w-0 flex-1", html: { hidden: !editing? }, data: { inline_edit_target: "edit" } do |form| %>
+    <div class="flex items-center gap-1">
+      <div class="min-w-0 flex-1">
+        <%= render Input::Component.new(
+          name: "category[name]",
+          id: "category_name_#{category.id}",
+          value: form.object.name,
+          required: true,
+          maxlength: 50,
+          aria: { label: "Nombre de la categoría" },
+          data: { action: "keydown.esc->inline-edit#cancel" },
+        ) %>
+      </div>
+
+      <%= render Button::Component.new(
+        type: "submit",
+        variant: :ghost,
+        size: :sm,
+        icon_only: true,
+        icon: render_svg("check.svg", styles: "size-full"),
+        classes: "text-primary",
+        aria: { label: "Guardar nombre" },
+      ) %>
+
+      <%= render Button::Component.new(
+        variant: :ghost,
+        size: :sm,
+        icon_only: true,
+        icon: render_svg("x_mark.svg", styles: "size-full"),
+        aria: { label: "Cancelar" },
+        data: { action: "inline-edit#cancel" },
+      ) %>
+    </div>
+
+    <% if editing? %>
+      <p class="mt-1 text-xs text-destructive" role="alert"><%= error_message %></p>
+    <% end %>
+  <% end %>
+</li>

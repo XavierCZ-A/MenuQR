@@ -19,6 +19,6 @@ class Admin::RestaurantsController < Admin::BaseController
     end
 
     def restaurant_params
-      params.expect(restaurant: [ :name, :description, :address, :hours, :logo, :banner, :remove_logo, :remove_banner ])
+      params.expect(restaurant: [ :name, :description, :address, :hours, :logo, :banner, :remove_logo, :remove_banner, :published ])
     end
 end

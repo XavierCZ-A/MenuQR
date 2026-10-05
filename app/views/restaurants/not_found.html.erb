@@ -1,0 +1,11 @@
+<% content_for :title, "Menú no encontrado" %>
+
+<main class="flex min-h-screen items-center justify-center bg-background px-4">
+  <div class="flex max-w-md flex-col items-center gap-3 rounded-lg border border-border bg-card px-6 py-12 text-center">
+    <%= render_svg("qr_code.svg", styles: "size-12 text-foreground/40") %>
+    <h1 class="text-2xl font-bold tracking-tight text-foreground">No encontramos este menú</h1>
+    <p class="text-sm text-pretty text-foreground/60">
+      El enlace o código QR que usaste no corresponde a ningún restaurante. Revisa que la dirección esté bien escrita o pide al restaurante un código QR actualizado.
+    </p>
+  </div>
+</main>
