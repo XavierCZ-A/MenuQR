@@ -87,7 +87,13 @@
       </div>
 
       <% if @items.any? %>
-        <div class="flex shrink-0 gap-2">
+        <div class="flex flex-wrap justify-end gap-2">
+          <%= render Button::Component.new(
+            text: "Etiquetas",
+            variant: :outline,
+            href: admin_tags_path,
+          ) %>
+
           <%= render Button::Component.new(
             text: "Categorías",
             variant: :outline,

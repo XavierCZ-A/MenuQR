@@ -1,20 +1,37 @@
 <%# locals: (item:) %>
-<article class="flex flex-col overflow-hidden rounded-lg border border-border bg-card">
-  <% if item.images.attached? %>
-    <%= image_tag item.images.first.variant(:card), alt: item.name, loading: "lazy", class: "aspect-[4/3] w-full bg-primary/5 object-cover" %>
-  <% else %>
-    <div class="flex aspect-[4/3] items-center justify-center bg-primary/5" aria-hidden="true">
-      <span class="font-serif text-4xl text-primary/25 sm:text-5xl"><%= item.name.first.upcase %></span>
-    </div>
-  <% end %>
-
-  <div class="flex flex-1 flex-col gap-1 p-3 sm:p-4">
-    <h3 class="line-clamp-2 text-sm leading-snug font-semibold text-card-foreground sm:text-base"><%= item.name %></h3>
-
-    <% if item.description.present? %>
-      <p class="line-clamp-2 text-xs text-foreground/60 sm:text-sm"><%= item.description %></p>
+<%= tag.article class: tw("flex flex-col overflow-hidden rounded-lg border border-border bg-card", ("col-span-2 border-2 border-primary" if item.featured?)) do %>
+  <div class="relative">
+    <% if item.images.attached? %>
+      <%= image_tag item.images.first.variant(:card),
+        alt: item.name,
+        loading: "lazy",
+        class: tw("aspect-[4/3] w-full bg-primary/5 object-cover", ("aspect-[16/9]" if item.featured?)) %>
+    <% else %>
+      <%= tag.div class: tw("flex aspect-[4/3] items-center justify-center bg-primary/5", ("aspect-[16/9]" if item.featured?)), aria: { hidden: true } do %>
+        <span class="font-serif text-4xl text-primary/25 sm:text-5xl"><%= item.name.first.upcase %></span>
+      <% end %>
     <% end %>
 
-    <p class="mt-auto pt-1 text-sm font-semibold tabular-nums text-primary sm:text-base"><%= format_price(item) %></p>
+    <% if item.featured? %>
+      <%= render Badge::Component.new(text: "★ Destacado", variant: :primary, classes: "absolute top-2 left-2") %>
+    <% end %>
   </div>
-</article>
+
+  <div class="flex flex-1 flex-col gap-1 p-3 sm:p-4">
+    <%= tag.h3 item.name, class: tw("line-clamp-2 text-sm leading-snug font-semibold text-card-foreground sm:text-base", ("text-base sm:text-xl" if item.featured?)) %>
+
+    <% if item.tags.any? %>
+      <div class="flex flex-wrap gap-1">
+        <% item.tags.each do |item_tag| %>
+          <%= render Badge::Component.new(text: item_tag.name, size: :sm) %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if item.description.present? %>
+      <%= tag.p item.description, class: tw("line-clamp-2 text-xs text-foreground/60 sm:text-sm", ("line-clamp-3 text-sm sm:text-base" if item.featured?)) %>
+    <% end %>
+
+    <%= tag.p format_price(item), class: tw("mt-auto pt-1 text-sm font-semibold tabular-nums text-primary sm:text-base", ("text-base sm:text-lg" if item.featured?)) %>
+  </div>
+<% end %>

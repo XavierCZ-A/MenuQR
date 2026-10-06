@@ -39,14 +39,15 @@ class Admin::ItemsController < Admin::BaseController
 
     def set_categories
       @categories = current_restaurant.categories.order(:position)
+      @tags = current_restaurant.tags
     end
 
     def item_params
-      params.expect(item: [ :name, :description, :price, :available, images: [] ])
+      params.expect(item: [ :name, :description, :price, :available, :featured, images: [] ])
     end
 
     # Uses the typed new category if present, otherwise the selected one.
-    # Both are scoped to the current restaurant so a forged category_id can't leak across restaurants.
+    # Category and tags are scoped to the current restaurant so forged ids can't leak across restaurants.
     def save_with_category(item)
       new_category_name = params.dig(:item, :new_category_name).to_s.strip
 
@@ -58,6 +59,8 @@ class Admin::ItemsController < Admin::BaseController
             @categories.find_by(id: params.dig(:item, :category_id))
           end
 
+        # Asignar tags a un platillo guardado escribe al instante; la transacción lo revierte si falla.
+        item.tags = @tags.where(id: params.dig(:item, :tag_ids)) if params[:item]&.key?(:tag_ids)
         item.save || raise(ActiveRecord::Rollback)
       end
     rescue ActiveRecord::RecordInvalid => error

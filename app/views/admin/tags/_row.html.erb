@@ -1,0 +1,74 @@
+<%# locals: (row:, failed_tag: nil) %>
+<% editing = failed_tag&.id == row.id %>
+<% form_record = editing ? failed_tag : row %>
+
+<li id="<%= dom_id(row) %>" class="flex items-center gap-2 bg-card px-3 py-2 md:px-4" data-controller="inline-edit">
+  <div class="flex min-w-0 flex-1 items-center gap-1" data-inline-edit-target="view" <%= "hidden" if editing %>> <%# herb:disable erb-no-output-in-attribute-position %>
+    <div class="flex min-w-0 flex-1 items-center gap-3">
+      <%= render Badge::Component.new(text: row.name) %>
+      <span class="truncate text-xs text-foreground/60"><%= pluralize(row.items_count, "platillo", "platillos") %></span>
+    </div>
+
+    <%= render Button::Component.new(
+      variant: :ghost,
+      size: :sm,
+      icon_only: true,
+      icon: render_svg("pencil.svg", styles: "size-full"),
+      title: "Renombrar",
+      aria: { label: "Renombrar #{row.name}" },
+      data: { action: "inline-edit#edit" },
+    ) %>
+
+    <%= form_with url: admin_tag_path(row), method: :delete, class: "flex", data: { turbo_confirm: "¿Eliminar la etiqueta \"#{row.name}\"? Se quitará de #{pluralize(row.items_count, "platillo", "platillos")}." } do %>
+      <%= render Button::Component.new(
+        type: "submit",
+        variant: :ghost,
+        size: :sm,
+        icon_only: true,
+        icon: render_svg("trash.svg", styles: "size-full"),
+        classes: "hover:bg-destructive/10 hover:text-destructive",
+        title: "Eliminar",
+        aria: { label: "Eliminar #{row.name}" },
+      ) %>
+    <% end %>
+  </div>
+
+  <%= form_with model: [:admin, form_record], class: "min-w-0 flex-1", html: { hidden: !editing }, data: { inline_edit_target: "edit" } do |form| %>
+    <div class="flex items-center gap-1">
+      <div class="min-w-0 flex-1">
+        <%= render Input::Component.new(
+          name: "tag[name]",
+          id: "tag_name_#{row.id}",
+          value: form.object.name,
+          required: true,
+          maxlength: 20,
+          aria: { label: "Nombre de la etiqueta" },
+          data: { action: "keydown.esc->inline-edit#cancel" },
+        ) %>
+      </div>
+
+      <%= render Button::Component.new(
+        type: "submit",
+        variant: :ghost,
+        size: :sm,
+        icon_only: true,
+        icon: render_svg("check.svg", styles: "size-full"),
+        classes: "text-primary",
+        aria: { label: "Guardar nombre" },
+      ) %>
+
+      <%= render Button::Component.new(
+        variant: :ghost,
+        size: :sm,
+        icon_only: true,
+        icon: render_svg("x_mark.svg", styles: "size-full"),
+        aria: { label: "Cancelar" },
+        data: { action: "inline-edit#cancel" },
+      ) %>
+    </div>
+
+    <% if editing %>
+      <p class="mt-1 text-xs text-destructive" role="alert"><%= failed_tag.errors.full_messages.to_sentence %></p>
+    <% end %>
+  <% end %>
+</li>

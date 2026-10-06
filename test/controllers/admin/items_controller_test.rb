@@ -20,6 +20,27 @@ class Admin::ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal categories(:drinks_one), item.category
   end
 
+  test "saves featured and the restaurant's tags, ignoring other restaurants' tags" do
+    item = items(:taco)
+
+    patch admin_item_url(item), params: { item: { category_id: item.category_id, featured: "1",
+      tag_ids: [ "", tags(:spicy_one).id, tags(:spicy_two).id ] } }
+    assert_equal [ tags(:spicy_one) ], item.reload.tags
+    assert item.featured?
+
+    patch admin_item_url(item), params: { item: { name: item.name, category_id: item.category_id, tag_ids: [ "" ] } }
+    assert_empty item.reload.tags
+  end
+
+  test "keeps tags unchanged when the item is invalid" do
+    item = items(:taco)
+    item.tags = [ tags(:new_one) ]
+
+    patch admin_item_url(item), params: { item: { category_id: item.category_id, name: "", tag_ids: [ tags(:spicy_one).id ] } }
+    assert_response :unprocessable_content
+    assert_equal [ tags(:new_one) ], item.reload.tags
+  end
+
   test "creates a new category from the form" do
     assert_difference([ "Item.count", "Category.count" ]) do
       post admin_items_url, params: { item: { name: "Flan", price: "50", category_id: categories(:general_one).id, new_category_name: " Postres ", images: [ dish_image ] } }

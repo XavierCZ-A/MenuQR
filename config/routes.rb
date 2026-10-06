@@ -21,10 +21,13 @@ Rails.application.routes.draw do
 
       resource :restaurant, only: %i[ edit update ], path: "settings", path_names: { edit: "/" }
       resource :qr_code, only: :show, path: "qr"
+      resource :account, only: %i[ edit update destroy ], path: "account", path_names: { edit: "/" }
 
       resources :categories, only: %i[ index create update destroy ] do
         patch :order, on: :collection, action: :update_order
       end
+
+      resources :tags, only: %i[ index create update destroy ]
 
       resources :items, except: %i[ index show ] do
         resource :availability, only: %i[ create destroy ], module: :items

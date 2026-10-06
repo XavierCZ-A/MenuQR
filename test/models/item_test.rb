@@ -18,6 +18,11 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal [ Category::DEFAULT_NAME ], restaurant.categories.pluck(:name)
   end
 
+  test "new restaurants get the default tags" do
+    restaurant = Restaurant.create!(name: "Nuevo", user: User.create!(email_address: "new@example.com", password: "Secret123"))
+    assert_equal Tag::DEFAULT_NAMES, restaurant.tags.map(&:name)
+  end
+
   test "validation messages are in Spanish" do
     item = Item.new
     assert_not item.valid?

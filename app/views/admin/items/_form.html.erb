@@ -1,4 +1,4 @@
-<%# locals: (item:, categories:) %>
+<%# locals: (item:, categories:, tags:) %>
 <%= form_with(model: [:admin, item], class: "mx-auto w-full max-w-xl space-y-6") do |form| %>
   <% if item.errors.any? %>
     <div class="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive" role="alert">
@@ -90,6 +90,42 @@
         <p class="text-xs text-foreground/60">Se crea al guardar el platillo. Puedes ordenarla después en Categorías.</p>
       </div>
     </div>
+
+    <fieldset class="space-y-2">
+      <div class="flex items-center justify-between gap-2">
+        <legend class="text-sm font-medium text-foreground">Etiquetas</legend>
+        <%= link_to "Administrar", admin_tags_path, class: "text-sm font-medium text-primary hover:underline" %>
+      </div>
+      <%= hidden_field_tag "item[tag_ids][]", "", id: nil %>
+
+      <% if tags.any? %>
+        <div class="flex flex-wrap gap-2">
+          <% tags.each do |option| %>
+            <label
+              class="
+                flex cursor-pointer items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5
+                text-sm has-checked:border-primary has-checked:bg-primary has-checked:text-primary-foreground
+                has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring
+              "
+            >
+              <%= check_box_tag "item[tag_ids][]", option.id, item.tags.include?(option), id: "item_tag_#{option.id}", class: "sr-only" %>
+              <%= option.name %>
+            </label>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-xs text-foreground/60">Aún no tienes etiquetas. Créalas en Administrar.</p>
+      <% end %>
+    </fieldset>
+
+    <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4">
+      <%= form.check_box :featured, class: "size-4 rounded border-input accent-primary" %>
+
+      <span class="space-y-0.5">
+        <span class="block text-sm font-medium text-foreground">Destacado</span>
+        <span class="block text-xs text-foreground/60">Se muestra primero y más grande en tu menú</span>
+      </span>
+    </label>
 
     <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4">
       <%= form.check_box :available, class: "size-4 rounded border-input accent-primary" %>

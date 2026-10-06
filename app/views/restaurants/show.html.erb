@@ -104,7 +104,7 @@
                 </h2>
               <% end %>
 
-              <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+              <div class="grid grid-flow-row-dense grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
                 <%= render partial: "item", collection: category.items, as: :item %>
               </div>
             </section>
@@ -113,8 +113,22 @@
       <% end %>
     </main>
 
-    <footer class="pb-8 text-center text-xs text-foreground/40">
-      Menú digital de <%= @restaurant.name %>
+    <footer class="mx-auto max-w-5xl border-t border-border px-4 pt-6 pb-8 text-center text-xs text-foreground/40">
+      <p><%= @restaurant.name %></p>
+
+      <%= link_to root_url(host: Rails.configuration.x.app_host),
+        class: "mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors hover:text-foreground/70",
+        target: "_blank", rel: "noopener" do %>
+        Menú creado con
+        <span class="flex size-4 items-center justify-center rounded bg-foreground/40 text-background"><%= render_svg("qr_code.svg", styles: "size-3") %></span>
+        <span class="font-semibold">MenuQr</span>
+      <% end %>
+
+      <p class="mt-1">
+        ¿Tienes un restaurante?
+        <%= link_to "Crea tu menú gratis", root_url(host: Rails.configuration.x.app_host),
+          class: "font-medium underline underline-offset-2 hover:text-foreground/70", target: "_blank", rel: "noopener" %>
+      </p>
     </footer>
   </div>
 <% end %>

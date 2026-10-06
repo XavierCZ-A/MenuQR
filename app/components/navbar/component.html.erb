@@ -24,6 +24,14 @@
         rel: "noopener",
       ) %>
 
+      <%= render Button::Component.new(
+        text: "Cuenta",
+        variant: :ghost,
+        size: :sm,
+        href: helpers.edit_admin_account_path,
+        icon: helpers.render_svg("cog.svg", styles: "size-full"),
+      ) %>
+
       <%= form_with url: session_path, method: :delete do %>
         <%= render Button::Component.new(
           text: "Salir",

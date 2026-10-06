@@ -17,6 +17,7 @@ class Restaurant < ApplicationRecord
   belongs_to :user
   has_many :categories, dependent: :destroy
   has_many :items, through: :categories
+  has_many :tags, -> { order(:id) }, dependent: :destroy
 
   normalizes :name, :description, :address, :hours, with: ->(value) { value.strip.presence }
 
@@ -29,7 +30,7 @@ class Restaurant < ApplicationRecord
 
   before_validation :generate_slug, on: :create
   before_save :remove_flagged_images
-  after_create :create_default_category
+  after_create :create_default_category, :create_default_tags
 
   private
     def acceptable_images
@@ -51,6 +52,10 @@ class Restaurant < ApplicationRecord
 
     def create_default_category
       categories.create!(name: Category::DEFAULT_NAME)
+    end
+
+    def create_default_tags
+      Tag::DEFAULT_NAMES.each { |name| tags.create!(name: name) }
     end
 
     def user_within_restaurant_limit

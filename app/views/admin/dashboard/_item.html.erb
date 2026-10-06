@@ -12,10 +12,22 @@
     <div class="flex items-center gap-2">
       <p class="truncate text-sm font-medium text-foreground"><%= item.name %></p>
 
+      <% if item.featured? %>
+        <%= render Badge::Component.new(text: "★ Destacado", variant: :primary) %>
+      <% end %>
+
       <% unless item.available? %>
-        <span class="shrink-0 rounded-full bg-foreground/5 px-2 py-0.5 text-xs font-medium text-foreground/70">Oculto</span>
+        <%= render Badge::Component.new(text: "Oculto", variant: :muted) %>
       <% end %>
     </div>
+
+    <% if item.tags.any? %>
+      <div class="mt-1 flex flex-wrap gap-1">
+        <% item.tags.each do |item_tag| %>
+          <%= render Badge::Component.new(text: item_tag.name, size: :sm) %>
+        <% end %>
+      </div>
+    <% end %>
 
     <% if item.description.present? %>
       <p class="mt-0.5 line-clamp-1 text-sm text-foreground/60"><%= item.description %></p>

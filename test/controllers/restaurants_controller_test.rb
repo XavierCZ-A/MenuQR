@@ -35,6 +35,23 @@ class RestaurantsControllerTest < ActionDispatch::IntegrationTest
     assert_select "header li", text: "Roma Norte"
   end
 
+  test "footer links back to MenuQr" do
+    get public_menu_url(restaurants(:one))
+    assert_select "footer a[href=?]", root_url(host: Rails.configuration.x.app_host), text: /MenuQr/
+  end
+
+  test "featured items come first, larger, and items show their tags" do
+    Item.create!(name: "Agua", price: "20", category: categories(:general_one), images: [ dish_image ])
+    Item.create!(name: "Zope", price: "40", category: categories(:general_one), images: [ dish_image ], featured: true, tags: [ tags(:spicy_one) ])
+
+    get public_menu_url(restaurants(:one))
+    assert_select "article h3" do |titles|
+      assert_equal "Zope", titles.first.text
+    end
+    assert_select "article.col-span-2", 1
+    assert_select "article.col-span-2 span", text: "🌶️ Picante"
+  end
+
   test "answers 304 when the menu has not changed" do
     get public_menu_url(restaurants(:one))
     get public_menu_url(restaurants(:one)), headers: { "If-None-Match" => response.etag }

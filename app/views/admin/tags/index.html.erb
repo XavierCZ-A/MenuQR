@@ -1,0 +1,78 @@
+<% content_for :title, "Etiquetas" %>
+
+<main class="px-4 py-8 md:px-8 md:py-10">
+  <%= render "admin/items/page_header", title: "Etiquetas", eyebrow: "Menú" %>
+
+  <div class="mx-auto max-w-xl space-y-6">
+    <section class="space-y-2">
+      <p class="text-sm text-foreground/60">
+        Aparecen en tus platillos para que tus clientes los identifiquen rápido. Puedes usar emojis, por ejemplo 🌾 Sin gluten.
+      </p>
+
+      <div class="overflow-hidden rounded-lg border border-border bg-card">
+        <% if @tags.any? %>
+          <ul class="divide-y divide-border">
+            <%= render partial: "admin/tags/row", collection: @tags, as: :row, locals: { failed_tag: @failed_tag } %>
+          </ul>
+        <% else %>
+          <p class="px-4 py-6 text-center text-sm text-foreground/60">Aún no tienes etiquetas.</p>
+        <% end %>
+
+        <% creating = @new_tag.errors.any? %>
+
+        <div class="border-t border-border" data-controller="inline-edit">
+          <button
+            type="button"
+            class="
+              flex w-full cursor-pointer items-center gap-2 px-2 py-2 text-sm font-medium text-primary
+              transition-colors hover:bg-primary/5 focus-visible:outline-2 focus-visible:-outline-offset-2
+              focus-visible:outline-ring md:px-3
+            "
+            data-inline-edit-target="view"
+            data-action="inline-edit#edit"
+            <%= "hidden" if creating %> <%# herb:disable erb-no-output-in-attribute-position %>
+          >
+            <span class="flex size-10 items-center justify-center"><%= render_svg("plus.svg", styles: "size-5") %></span>
+            Nueva etiqueta
+          </button>
+
+          <%= form_with model: [:admin, @new_tag], class: "px-2 py-2 md:px-3", html: { hidden: !creating }, data: { inline_edit_target: "edit" } do |form| %>
+            <div class="flex items-center gap-1">
+              <div class="min-w-0 flex-1">
+                <%= render Input::Component.new(
+                  name: "tag[name]",
+                  id: "new_tag_name",
+                  value: form.object.name,
+                  placeholder: "Ej. 🌾 Sin gluten",
+                  required: true,
+                  maxlength: 20,
+                  aria: { label: "Nombre de la nueva etiqueta" },
+                  data: { action: "keydown.esc->inline-edit#cancel" },
+                ) %>
+              </div>
+
+              <%= render Button::Component.new(text: "Crear", type: "submit", size: :sm) %>
+
+              <%= render Button::Component.new(
+                variant: :ghost,
+                size: :sm,
+                icon_only: true,
+                icon: render_svg("x_mark.svg", styles: "size-full"),
+                aria: { label: "Cancelar" },
+                data: { action: "inline-edit#cancel" },
+              ) %>
+            </div>
+
+            <% if creating %>
+              <p class="mt-1 text-xs text-destructive" role="alert">
+                <%= @new_tag.errors.full_messages.to_sentence %>
+              </p>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <%= render Button::Component.new(text: "Listo", href: admin_root_path, full_width: true) %>
+  </div>
+</main>

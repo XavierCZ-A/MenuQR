@@ -1,0 +1,95 @@
+<% content_for :title, "Cuenta · #{current_restaurant.name}" %>
+
+<main class="px-4 py-8 md:px-8 md:py-10">
+  <%= render "admin/items/page_header", title: "Cuenta", eyebrow: "Tu acceso" %>
+
+  <div class="mx-auto w-full max-w-xl space-y-6">
+    <% if @user.errors.any? %>
+      <div class="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive" role="alert">
+        <p class="font-medium">
+          No se pudieron guardar los cambios (<%= pluralize(@user.errors.count, "error", "errores") %>)
+        </p>
+
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          <% @user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= form_with model: @user, url: admin_account_path, method: :patch, class: "flex flex-col gap-5 rounded-lg border border-border bg-card p-6 sm:p-8" do %>
+      <div>
+        <h2 class="text-base font-semibold text-foreground">Correo electrónico</h2>
+        <p class="text-sm text-foreground/60">Lo usas para iniciar sesión y recuperar tu contraseña.</p>
+      </div>
+
+      <%= render Input::Component.new(
+        name: "user[email_address]",
+        type: :email,
+        value: @user.email_address,
+        label: "Correo",
+        required: true,
+        autocomplete: "email",
+      ) %>
+
+      <%= render Input::Component.new(
+        name: "current_password",
+        id: "email_current_password",
+        type: :password,
+        label: "Contraseña actual",
+        required: true,
+        autocomplete: "current-password",
+      ) %>
+
+      <%= render Button::Component.new(text: "Guardar correo", type: "submit", data: { turbo_submits_with: "Guardando…" }) %>
+    <% end %>
+
+    <%= form_with model: @user, url: admin_account_path, method: :patch, class: "flex flex-col gap-5 rounded-lg border border-border bg-card p-6 sm:p-8" do %>
+      <div>
+        <h2 class="text-base font-semibold text-foreground">Contraseña</h2>
+        <p class="text-sm text-foreground/60">Al cambiarla se cerrarán tus otras sesiones abiertas.</p>
+      </div>
+
+      <%= render Input::Component.new(
+        name: "current_password",
+        id: "password_current_password",
+        type: :password,
+        label: "Contraseña actual",
+        required: true,
+        autocomplete: "current-password",
+      ) %>
+
+      <%= render Password::Component.new(
+        label: "Nueva contraseña",
+        name: "user[password]",
+        required: true,
+        autocomplete: "new-password",
+      ) %>
+
+      <%= render Button::Component.new(text: "Cambiar contraseña", type: "submit", data: { turbo_submits_with: "Guardando…" }) %>
+    <% end %>
+
+    <%= form_with url: admin_account_path, method: :delete,
+      class: "flex flex-col gap-5 rounded-lg border border-destructive/30 bg-card p-6 sm:p-8",
+      data: { turbo_confirm: "¿Eliminar tu cuenta? Se borrarán tu restaurante, tu menú y tu QR dejará de funcionar. Esta acción no se puede deshacer." } do %>
+      <div>
+        <h2 class="text-base font-semibold text-destructive">Eliminar cuenta</h2>
+        <p class="text-sm text-foreground/60">
+          Se borrarán tu restaurante, categorías, platillos e imágenes. Tu enlace y QR dejarán de funcionar.
+        </p>
+      </div>
+
+      <%= render Input::Component.new(
+        name: "current_password",
+        id: "delete_current_password",
+        type: :password,
+        label: "Contraseña actual",
+        required: true,
+        autocomplete: "current-password",
+      ) %>
+
+      <%= render Button::Component.new(text: "Eliminar mi cuenta", variant: :destructive, type: "submit") %>
+    <% end %>
+  </div>
+</main>

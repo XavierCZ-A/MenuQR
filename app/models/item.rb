@@ -9,6 +9,8 @@ class Item < ApplicationRecord
   end
 
   belongs_to :category, touch: true
+  has_many :item_tags, dependent: :destroy
+  has_many :tags, -> { order(:id) }, through: :item_tags
 
   validates :name, presence: true
   validates :price_cents, numericality: { only_integer: true, greater_than: 0 }
