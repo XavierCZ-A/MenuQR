@@ -1,0 +1,246 @@
+<% content_for :title, "MenuQr · Menú digital con código QR para restaurantes" %>
+
+<% content_for :head do %>
+  <meta
+    name="description"
+    content="Crea el menú digital de tu restaurante, compártelo con un código QR y actualízalo cuando quieras. Sin apps y sin reimprimir."
+  >
+
+  <meta property="og:title" content="MenuQr · Menú digital con código QR">
+  <meta property="og:description" content="Crea tu menú digital en minutos y compártelo con un código QR.">
+<% end %>
+
+<% steps = [
+    [ "plus.svg", "Crea tu cuenta", "Regístrate con el nombre de tu restaurante. Tu menú tiene su propio enlace desde el primer minuto." ],
+    [ "photo.svg", "Agrega tus platillos", "Sube fotos, precios y descripciones, y organízalos por categorías." ],
+    [ "qr_code.svg", "Imprime tu QR", "Descarga el código QR, ponlo en tus mesas y listo: tus clientes ven el menú al escanearlo." ]
+  ]
+
+  benefits = [
+    [ "pencil.svg", "Cambios al instante", "Actualiza precios o platillos y tu menú se actualiza solo. El QR impreso nunca cambia." ],
+    [ "check.svg", "Marca lo agotado", "Oculta un platillo con un toque cuando se acaba y vuelve a mostrarlo cuando regrese." ],
+    [ "photo.svg", "Fotos que antojan", "Muestra hasta dos fotos por platillo, optimizadas para cargar rápido en el celular." ],
+    [ "queue_list.svg", "Todo en orden", "Agrupa tus platillos por categorías y acomódalas en el orden que prefieras." ],
+    [ "qr_code.svg", "Sin descargar apps", "Tus clientes solo escanean el código con la cámara de su celular." ],
+    [ "external_link.svg", "Tu propio enlace", "Comparte tu menú por WhatsApp o redes sociales con un enlace con el nombre de tu restaurante." ]
+  ]
+
+  faqs = [
+    [ "¿Cuánto cuesta?", "Por ahora MenuQr es gratis. Si en el futuro agregamos planes de pago, te avisaremos con anticipación." ],
+    [ "¿Mis clientes necesitan descargar una app?", "No. Escanean el código QR con la cámara de su celular y el menú se abre en el navegador." ],
+    [ "Si cambio un precio, ¿tengo que volver a imprimir el QR?", "No. El código QR siempre apunta al mismo enlace, así que cualquier cambio se ve de inmediato." ],
+    [ "¿Necesito conocimientos técnicos?", "No. Si sabes usar redes sociales, puedes crear tu menú. Todo se administra desde un panel sencillo." ],
+    [ "¿Puedo dejar de mostrar mi menú temporalmente?", "Sí. Desde la configuración puedes despublicar tu menú y volver a publicarlo cuando quieras." ]
+  ] %>
+
+<div class="min-h-screen bg-background text-foreground">
+  <header class="sticky top-0 z-50 border-b border-border bg-background/90 px-4 backdrop-blur sm:px-6">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3">
+      <%= link_to root_path, class: "flex items-center gap-2" do %>
+        <span class="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <%= render_svg("qr_code.svg", styles: "size-4") %>
+        </span>
+
+        <span class="text-base font-bold">MenuQr</span>
+      <% end %>
+
+      <nav class="flex items-center gap-1">
+        <%= render Button::Component.new(text: "Iniciar sesión", variant: :ghost, size: :sm, href: new_session_path) %>
+        <%= render Button::Component.new(text: "Crear menú", size: :sm, href: new_user_path, classes: "hidden sm:inline-flex") %>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <%# Hero %>
+    <section class="px-4 pt-12 pb-16 sm:px-6 lg:pt-20 lg:pb-24">
+      <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+        <div class="text-center lg:text-left">
+          <p
+            class="
+              mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs
+              font-medium text-primary
+            "
+          >
+            <%= render_svg("qr_code.svg", styles: "size-3.5") %> Menú digital para restaurantes
+          </p>
+
+          <h1 class="text-3xl leading-tight font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl">
+            Tu menú con código QR, listo en minutos
+          </h1>
+
+          <p class="mx-auto mt-4 max-w-xl text-base text-pretty text-foreground/60 sm:text-lg lg:mx-0">
+            Crea el menú de tu restaurante, compártelo con un QR y actualízalo cuando quieras. Sin apps y sin
+            reimprimir.
+          </p>
+
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
+            <%= render Button::Component.new(text: "Crear mi menú gratis", size: :lg, href: new_user_path) %>
+            <%= render Button::Component.new(text: "Ver cómo funciona", variant: :outline, size: :lg, href: "#como-funciona") %>
+          </div>
+        </div>
+
+        <%# Mockup de teléfono con un menú de ejemplo %>
+        <div class="mx-auto w-full max-w-[17rem] sm:max-w-xs" aria-hidden="true">
+          <div class="rounded-[2.5rem] border-8 border-foreground bg-background p-3">
+            <div class="mx-auto mb-3 h-1.5 w-16 rounded-full bg-foreground/15"></div>
+
+            <div class="flex flex-col items-center rounded-2xl bg-secondary px-3 pt-5 pb-4 text-center text-secondary-foreground">
+              <span
+                class="
+                  flex size-10 items-center justify-center rounded-full bg-background font-serif text-base font-bold
+                  text-foreground ring-2 ring-secondary-foreground/20
+                "
+              >
+                L
+              </span>
+
+              <p class="mt-2 text-sm font-extrabold tracking-tight">La Cocina de Ana</p>
+
+              <p class="mt-1 text-[0.625rem] text-secondary-foreground/85">Cocina casera mexicana desde 1998.</p>
+
+              <div class="mt-2 flex flex-wrap justify-center gap-1 text-[0.5625rem] font-medium">
+                <span class="flex items-center gap-1 rounded-full bg-secondary-foreground/15 px-2 py-0.5">
+                  <%= render_svg("clock.svg", styles: "size-2.5 shrink-0") %> 9:00 a 22:00
+                </span>
+                <span class="flex items-center gap-1 rounded-full bg-secondary-foreground/15 px-2 py-0.5">
+                  <%= render_svg("map_pin.svg", styles: "size-2.5 shrink-0") %> Centro
+                </span>
+              </div>
+            </div>
+
+            <div class="mt-3 flex gap-1.5 overflow-hidden px-1 text-[0.625rem] font-medium">
+              <span class="rounded-full bg-primary px-2.5 py-1 text-primary-foreground">Desayunos</span>
+              <span class="rounded-full border border-border px-2.5 py-1">Comidas</span>
+              <span class="rounded-full border border-border px-2.5 py-1">Bebidas</span>
+            </div>
+
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <% [ [ "Chilaquiles", "$95" ], [ "Molletes", "$80" ], [ "Enchiladas", "$110" ], [ "Café de olla", "$35" ] ].each do |name, price| %>
+                <div class="overflow-hidden rounded-lg border border-border bg-card">
+                  <div class="flex aspect-[4/3] items-center justify-center bg-primary/5 font-serif text-2xl text-primary/25">
+                    <%= name.first %>
+                  </div>
+
+                  <div class="p-2">
+                    <p class="truncate text-[0.6875rem] font-semibold"><%= name %></p>
+                    <p class="text-[0.6875rem] font-semibold text-primary"><%= price %></p>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <%# Cómo funciona %>
+    <section id="como-funciona" class="scroll-mt-16 border-y border-border bg-card px-4 py-16 sm:px-6 lg:py-24">
+      <div class="mx-auto max-w-6xl">
+        <h2 class="text-center text-2xl font-bold tracking-tight sm:text-3xl">Cómo funciona</h2>
+
+        <p class="mx-auto mt-3 max-w-xl text-center text-foreground/60">
+          Tres pasos y tu menú está en manos de tus clientes.
+        </p>
+
+        <ol class="mt-10 grid gap-4 sm:grid-cols-3">
+          <% steps.each.with_index(1) do |(icon, title, text), number| %>
+            <li class="rounded-lg border border-border bg-background p-6">
+              <div class="flex items-center gap-3">
+                <span
+                  class="
+                    flex size-10 items-center justify-center rounded-full bg-primary text-sm font-bold
+                    text-primary-foreground
+                  "
+                >
+                  <%= number %>
+                </span>
+
+                <%= render_svg(icon, styles: "size-6 text-primary") %>
+              </div>
+
+              <h3 class="mt-4 text-lg font-semibold"><%= title %></h3>
+              <p class="mt-1 text-sm text-foreground/60"><%= text %></p>
+            </li>
+          <% end %>
+        </ol>
+      </div>
+    </section>
+
+    <%# Beneficios %>
+    <section class="px-4 py-16 sm:px-6 lg:py-24">
+      <div class="mx-auto max-w-6xl">
+        <h2 class="text-center text-2xl font-bold tracking-tight sm:text-3xl">Todo lo que tu menú necesita</h2>
+
+        <p class="mx-auto mt-3 max-w-xl text-center text-foreground/60">
+          Pensado para que administres tu menú desde el celular, entre servicio y servicio.
+        </p>
+
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <% benefits.each do |icon, title, text| %>
+            <div class="rounded-lg border border-border bg-card p-6">
+              <span class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <%= render_svg(icon, styles: "size-5") %>
+              </span>
+
+              <h3 class="mt-4 font-semibold"><%= title %></h3>
+
+              <p class="mt-1 text-sm text-foreground/60"><%= text %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <%# Preguntas frecuentes %>
+    <section class="border-t border-border bg-card px-4 py-16 sm:px-6 lg:py-24">
+      <div class="mx-auto max-w-2xl">
+        <h2 class="text-center text-2xl font-bold tracking-tight sm:text-3xl">Preguntas frecuentes</h2>
+
+        <div class="mt-10 space-y-3">
+          <% faqs.each do |question, answer| %>
+            <details class="group rounded-lg border border-border bg-background">
+              <summary
+                class="
+                  flex cursor-pointer list-none items-center justify-between gap-4 p-4 font-medium
+                  [&::-webkit-details-marker]:hidden
+                "
+              >
+                <%= question %>
+                <%= render_svg("plus.svg", styles: "size-5 shrink-0 text-primary transition-transform group-open:rotate-45") %>
+              </summary>
+
+              <p class="px-4 pb-4 text-sm text-foreground/60"><%= answer %></p>
+            </details>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <%# CTA final %>
+    <section class="px-4 py-16 sm:px-6 lg:py-24">
+      <div class="mx-auto max-w-4xl rounded-2xl border px-6 py-12 text-center text-primary-foreground shadow-2xl sm:px-12">
+        <h2 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          Lleva tu menú al celular de tus clientes hoy
+        </h2>
+
+        <p class="mx-auto mt-3 max-w-xl text-foreground">
+          Crea tu cuenta en menos de un minuto. Empieza gratis.
+        </p>
+
+        <%= render Button::Component.new(text: "Crear mi menú gratis", variant: :accent, size: :lg, href: new_user_path, classes: "mt-8 w-full sm:w-auto") %>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-border px-4 py-8 sm:px-6">
+    <div class="mx-auto flex max-w-6xl flex-col items-center gap-3 text-sm text-foreground/60 sm:flex-row sm:justify-between">
+      <p>© <%= Date.current.year %> MenuQr</p>
+
+      <nav class="flex gap-4">
+        <%= link_to "Términos de Servicio", terms_path, class: "hover:text-primary" %>
+        <%= link_to "Aviso de Privacidad", privacy_path, class: "hover:text-primary" %>
+      </nav>
+    </div>
+  </footer>
+</div>

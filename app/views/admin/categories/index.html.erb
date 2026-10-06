@@ -59,7 +59,7 @@
             "
             data-inline-edit-target="view"
             data-action="inline-edit#edit"
-            <%= "hidden" if creating %>
+            <%= "hidden" if creating %> <%# herb:disable erb-no-output-in-attribute-position %>
           >
             <span class="flex size-10 items-center justify-center"><%= render_svg("plus.svg", styles: "size-5") %></span>
             Nueva categoría

@@ -69,11 +69,10 @@ class RestaurantsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "reserved subdomains and the bare domain do not serve a menu" do
-    get "http://www.localhost/"
-    assert_redirected_to new_session_url
-
-    get "http://localhost/"
-    assert_redirected_to new_session_url
+    %w[ http://www.localhost/ http://localhost/ ].each do |url|
+      get url
+      assert_select "h1", "Tu menú con código QR, listo en minutos"
+    end
   end
 
   test "menu subdomains only serve the menu" do

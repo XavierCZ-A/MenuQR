@@ -74,3 +74,10 @@
     full_width: true,
   ) %>
 <% end %>
+
+<p class="mt-6 text-center text-xs leading-relaxed text-foreground/60">
+  Al registrarte, aceptas nuestros
+  <%= link_to "Términos de Servicio", terms_path, class: "font-medium text-primary underline underline-offset-2 transition-colors hover:text-primary/80" %>
+  y
+  <%= link_to "Aviso de Privacidad", privacy_path, class: "font-medium text-primary underline underline-offset-2 transition-colors hover:text-primary/80" %>.
+</p>

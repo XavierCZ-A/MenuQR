@@ -33,7 +33,7 @@ module Button
       outline:     "border border-input bg-transparent text-foreground hover:bg-primary/10 hover:text-primary",
       ghost:       "bg-transparent text-foreground hover:bg-primary/10 hover:text-primary",
       destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-      accent:      "border border-border bg-accent text-accent-foreground hover:bg-primary/10",
+      accent:      "border border-border bg-accent text-accent-foreground hover:bg-primary/10 ",
       link:        "text-primary underline underline-offset-4 hover:text-primary/80"
     }.freeze
 

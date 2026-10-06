@@ -18,7 +18,7 @@
     <%= render_svg("grip.svg", styles: "size-5") %>
   </button>
 
-  <div class="flex min-w-0 flex-1 items-center gap-1" data-inline-edit-target="view" <%= "hidden" if editing? %>>
+  <div class="flex min-w-0 flex-1 items-center gap-1" data-inline-edit-target="view" <%= "hidden" if editing? %>> <%# herb:disable erb-no-output-in-attribute-position %>
     <div class="min-w-0 flex-1">
       <p class="truncate text-sm font-medium text-foreground"><%= category.name %></p>
       <p class="text-xs text-foreground/60"><%= items_label %></p>

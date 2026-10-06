@@ -13,6 +13,9 @@ Rails.application.routes.draw do
 
     resources :passwords, param: :token
 
+    get "privacidad", to: "legal#privacy", as: :privacy
+    get "terminos", to: "legal#terms", as: :terms
+
     namespace :admin, path: "dashboard" do
       root "dashboard#show"
 
@@ -28,7 +31,7 @@ Rails.application.routes.draw do
       end
     end
 
-    root "admin/dashboard#show"
+    root "landing#show"
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
